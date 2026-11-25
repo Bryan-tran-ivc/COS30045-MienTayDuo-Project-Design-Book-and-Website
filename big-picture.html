@@ -96,9 +96,18 @@
                 Remove bed days of patients who died (2011–2020)
               </label>
             </div>
-            <ul class="legend" aria-label="Legend">
-              <li><span class="swatch swatch--orange"></span>Share of bed days</li>
-              <li><span class="swatch swatch--blue"></span>Share of admissions</li>
+            <!-- A11Y: legend entries are toggle buttons (aria-pressed) that highlight one line -->
+            <ul class="legend" id="legend-a" aria-label="Legend: select a line to highlight it">
+              <li>
+                <button type="button" class="legend-button" data-series="bed" aria-pressed="false">
+                  <span class="swatch swatch--orange"></span>Share of bed days
+                </button>
+              </li>
+              <li>
+                <button type="button" class="legend-button" data-series="adm" aria-pressed="false">
+                  <span class="swatch swatch--blue"></span>Share of admissions
+                </button>
+              </li>
               <li class="legend-deaths" hidden>
                 <span class="swatch swatch--orange-dashed"></span>Bed days without patients who
                 died
@@ -107,6 +116,10 @@
             <div class="chart" id="chart-a"></div>
             <p class="chart-note" id="note-a-deaths" hidden>
               2021 is not shown for this line: the death fields are blank that year.
+            </p>
+            <p class="chart-note">
+              Move the pointer over the chart, or focus it and use the arrow keys, to read each
+              year. Select a legend entry to highlight its line.
             </p>
             <p class="chart-note">
               Dashed grey lines mark changes in how cases or bed days were counted; hover or

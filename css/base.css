@@ -35,6 +35,12 @@
   box-sizing: border-box;
 }
 
+/* The hidden attribute always wins over display rules such as ".legend li { display: inline-flex }"
+   (without this, chart A's "without patients who died" legend entry showed while the line was off) */
+[hidden] {
+  display: none !important;
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 72px; /* keeps headings visible below the sticky header after a jump */
@@ -576,6 +582,30 @@ a {
   background: var(--ink);
   color: #fff;
 }
+/* Legend entries that are buttons (chart A): look like the legend, show their pressed state with a border */
+.legend-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink-2);
+  min-height: 32px; /* A11Y: comfortable touch target */
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  cursor: pointer;
+}
+.legend-button:hover {
+  background: var(--surface-2);
+}
+.legend-button[aria-pressed="true"] {
+  border-color: var(--ink);
+  color: var(--ink);
+  font-weight: 600;
+}
+
 /* Secondary button and a button that looks like a link (age picker, age status line) */
 .button-secondary {
   font: inherit;

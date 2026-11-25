@@ -16,6 +16,14 @@ const initChartControls = () => {
     if (drawnCharts.has("a")) updateChartA();
   });
 
+  // Chart A: legend buttons highlight one series; pressing the highlighted one again shows both (task 2.2)
+  // A11Y: real <button>s with aria-pressed (kept in step by highlightSeriesA)
+  d3.selectAll("#legend-a .legend-button").on("click", function () {
+    const series = this.dataset.series;
+    chartState.a.highlight = chartState.a.highlight === series ? null : series;
+    if (drawnCharts.has("a")) highlightSeriesA();
+  });
+
   // Segmented toggles (charts C and E)
   // A11Y: real <button>s; aria-pressed tells screen readers which option is on
   const wireToggle = (groupId, onChange) => {

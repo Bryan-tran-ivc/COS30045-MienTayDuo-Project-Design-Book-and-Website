@@ -72,6 +72,7 @@ const CHART_LAYOUT = {
 const POINT_RADIUS = 4; // 8 px diameter
 const BAR_CORNER = 2;
 const MIN_BAR_WIDTH = 8;
+const DIMMED_OPACITY = 0.3; // series or groups that are not highlighted (SPEC §4.A, §4.B)
 
 // ---------- Data rules ----------
 const MIN_CELL = 20; // SPEC §2.3: no mark for fewer than 20 admissions
@@ -231,7 +232,7 @@ const formatters = {
 
 // ---------- Current state of each chart's control (changed by interactions.js) ----------
 const chartState = {
-  a: { showWithoutDeaths: false },
+  a: { showWithoutDeaths: false, highlight: null, year: null }, // highlight: null | "bed" | "adm"; year: last scrubbed
   c: { measure: "bedDays" }, // "bedDays" | "admissions"
   d: { ageGroup: ALL_AGES },
   e: { view: "average" }, // "average" | "year"

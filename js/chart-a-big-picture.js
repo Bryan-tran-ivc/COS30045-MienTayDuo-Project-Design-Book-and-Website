@@ -1,6 +1,7 @@
 /* File: js/chart-a-big-picture.js
  * Purpose: Chart A (the big picture, RQ1 and RQ3) – pedestrian share of road-injury bed days and admissions,
  *          2011–2021, with the three series breaks marked and an optional line without bed days of patients who died.
+ *          Legend buttons highlight one series; one slider layer lets the reader scrub through the years.
  * Project: COS30045 · Team MienTayDuo · "Few cases, long stays"
  */
 
@@ -78,7 +79,7 @@ const drawChartA = () => {
     { key: "adm", column: "admission_share_pct", color: COLORS.admissions, label: "Admissions" },
   ];
 
-  inner.append("g").attr("class", "without-deaths"); // filled by updateChartA()
+  inner.append("g").attr("class", "without-deaths series--bed"); // filled by updateChartA(); a bed-day measure
 
   const lines = inner
     .append("g")
@@ -86,7 +87,7 @@ const drawChartA = () => {
     .selectAll("path")
     .data(series)
     .join("path")
-    .attr("class", (d) => `line line--${d.key}`)
+    .attr("class", (d) => `line line--${d.key} series--${d.key}`)
     .attr("stroke", (d) => d.color)
     .attr("d", (d) => lineFor(d.column)(rows));
 
@@ -96,6 +97,7 @@ const drawChartA = () => {
     .selectAll("g")
     .data(series)
     .join("g")
+    .attr("class", (d) => `series-points series--${d.key}`)
     .selectAll("circle")
     .data((s) => rows.map((row) => ({ row, s })))
     .join("circle")
@@ -112,7 +114,7 @@ const drawChartA = () => {
     .selectAll("text")
     .data(series)
     .join("text")
-    .attr("class", "chart-label")
+    .attr("class", (d) => `chart-label series--${d.key}`)
     .attr("x", mobile ? x(latest["Calendar year"]) : x(latest["Calendar year"]) + 10)
     // Phones: below the last point (both lines fall towards 2021, so the space under each end point is empty)
     .attr("y", (d) => (mobile ? y(latest[d.column]) + 22 : y(latest[d.column])))
@@ -120,8 +122,9 @@ const drawChartA = () => {
     .attr("text-anchor", mobile ? "end" : "start")
     .text((d) => `${d.label} ${formatters.pct1(latest[d.column])}`);
 
-  // Hover/focus band per year: a guide line and larger points for that year, plus a tooltip with every value
-  const step = size.innerWidth / (years.length - 1);
+  // Year scrubbing (SPEC §4.A, task 2.2): one layer over the plot. The pointer picks the nearest year; for the
+  // keyboard the layer is a single slider (← / → one year, Home / End first / last year), not eleven tab stops.
+  // Either way the year gets a guide line, larger points and a tooltip with every value.
   const guide = inner
     .append("line")
     .attr("class", "guide-line")
@@ -147,37 +150,64 @@ const drawChartA = () => {
     return lines;
   };
 
-  const yearBands = inner
-    .append("g")
-    .attr("class", "year-bands")
-    .selectAll("rect")
-    .data(rows)
-    .join("rect")
-    .attr("class", "hit")
-    .attr("x", (d) => Math.max(0, x(d["Calendar year"]) - step / 2))
-    .attr("width", (d) => {
-      const left = Math.max(0, x(d["Calendar year"]) - step / 2);
-      const right = Math.min(size.innerWidth, x(d["Calendar year"]) + step / 2);
-      return right - left;
-    })
-    .attr("y", 0)
-    .attr("height", size.innerHeight);
+  const yearText = (row) =>
+    `${row["Calendar year"]}: ${yearTooltip(row)
+      .map((line) => line.text)
+      .join(", ")}`;
+  const rowForYear = (year) => rows.find((row) => row["Calendar year"] === year);
+  // The year whose x position is closest to a pointer position
+  const nearestYear = (px) => years[d3.minIndex(years, (year) => Math.abs(x(year) - px))];
 
-  makeInteractive(yearBands, {
-    htmlFor: (row) => tooltipHtml(String(row["Calendar year"]), yearTooltip(row)),
-    labelFor: (row) =>
-      `${row["Calendar year"]}: ${yearTooltip(row)
-        .map((line) => line.text)
-        .join(", ")}`,
-    onEnter: (event, row) => {
-      guide.attr("x1", x(row["Calendar year"])).attr("x2", x(row["Calendar year"])).attr("opacity", 1);
-      points.attr("r", (d) => (d.row === row ? POINT_RADIUS + 2 : POINT_RADIUS));
-    },
-    onLeave: () => {
-      guide.attr("opacity", 0);
-      points.attr("r", POINT_RADIUS);
-    },
-  });
+  // A11Y: role="slider" with the year as its value; aria-valuetext reads like the tooltip
+  const scrub = inner
+    .append("rect")
+    .attr("class", "hit scrub")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", size.innerWidth)
+    .attr("height", size.innerHeight)
+    .attr("tabindex", 0)
+    .attr("role", "slider")
+    .attr("aria-label", "Year")
+    .attr("aria-valuemin", years[0])
+    .attr("aria-valuemax", years[years.length - 1]);
+
+  // event: the pointer event, or null for the keyboard (then the tooltip sits by that year's bed-day point)
+  const showYear = (year, event) => {
+    const row = rowForYear(year);
+    chartState.a.year = year;
+    guide.attr("x1", x(year)).attr("x2", x(year)).attr("opacity", 1);
+    points.attr("r", (d) => (d.row === row ? POINT_RADIUS + 2 : POINT_RADIUS));
+    scrub.attr("aria-valuenow", year).attr("aria-valuetext", yearText(row));
+    const anchor = points.filter((d) => d.row === row && d.s.key === "bed").node();
+    showTooltip(event, anchor, tooltipHtml(String(year), yearTooltip(row)));
+  };
+  const hideYear = () => {
+    guide.attr("opacity", 0);
+    points.attr("r", POINT_RADIUS);
+    hideTooltip();
+  };
+  const startYear = () => (years.includes(chartState.a.year) ? chartState.a.year : years[years.length - 1]);
+  scrub.attr("aria-valuenow", startYear()).attr("aria-valuetext", yearText(rowForYear(startYear())));
+
+  scrub
+    .on("mousemove", (event) => showYear(nearestYear(d3.pointer(event, inner.node())[0]), event))
+    // A tap on a touch screen arrives as a click
+    .on("click", (event) => showYear(nearestYear(d3.pointer(event, inner.node())[0]), null))
+    .on("mouseleave", hideYear)
+    .on("focus", () => showYear(startYear(), null))
+    .on("blur", hideYear)
+    .on("keydown", (event) => {
+      const index = years.indexOf(startYear());
+      const moves = { ArrowLeft: index - 1, ArrowDown: index - 1, ArrowRight: index + 1, ArrowUp: index + 1, Home: 0, End: years.length - 1 };
+      if (event.key === "Escape") {
+        hideYear();
+        return;
+      }
+      if (!(event.key in moves)) return;
+      event.preventDefault(); // the arrow keys move the year, not the page
+      showYear(years[Math.max(0, Math.min(years.length - 1, moves[event.key]))], null);
+    });
 
   // Break hit areas sit above the year bands, so hovering exactly on a dashed line explains it
   const breakHits = breaks
@@ -276,6 +306,23 @@ const updateChartA = (instant = false) => {
 
   d3.select(".legend-deaths").attr("hidden", show ? null : true);
   d3.select("#note-a-deaths").attr("hidden", show ? null : true);
+  highlightSeriesA(instant);
+};
+
+// Legend highlight (SPEC §4.A, task 2.2): the series that is not chosen (line, points, end label) fades.
+// The legend buttons' aria-pressed always matches chartState.a.highlight.
+const highlightSeriesA = (instant = false) => {
+  const chosen = chartState.a.highlight;
+  ["bed", "adm"].forEach((key) => {
+    d3.selectAll(`#chart-a .series--${key}`)
+      .transition("highlight") // named, so it never cuts short the draw-in or fade transitions
+      .duration(instant ? 0 : duration())
+      .ease(d3.easeCubicInOut)
+      .attr("opacity", chosen && chosen !== key ? DIMMED_OPACITY : 1);
+  });
+  d3.selectAll("#legend-a .legend-button").attr("aria-pressed", function () {
+    return String(this.dataset.series === chosen);
+  });
 };
 
 const buildTableA = () => {
