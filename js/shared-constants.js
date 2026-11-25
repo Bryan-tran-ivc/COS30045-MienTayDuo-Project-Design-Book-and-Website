@@ -14,6 +14,7 @@ const COLORS = {
   ink2: "#52514e",
   grid: "#e7e6e2",
   card: "#ffffff",
+  highlight: "#e7e6e2", // band behind the reader's age group (SPEC §5); always paired with a bold axis label
 };
 
 // ---------- Layout ----------
@@ -161,6 +162,24 @@ const AGE_LABELS = {
 const UNDER_40 = ["0-7", "8-16", "17-25", "26-39"];
 const OVER_65 = ["65-74", "75+"];
 
+// ---------- Reader's age group (SPEC §3.0.4, task 2.1) ----------
+const AGE_STORAGE_KEY = "mtd-age-group"; // localStorage key
+const AGE_PARAM = "age"; // URL parameter, e.g. story-older.html?age=65-74
+// The story page about each age group: 40 and over → Story 1, under 40 → Story 4 (also used by chart B, SPEC §4.B)
+const STORIES = {
+  older: { page: "story-older.html", label: "Story 1 · Older pedestrians" },
+  young: { page: "story-young.html", label: "Story 4 · Children and young people" },
+};
+const STORY_FOR_AGE = {
+  "0-7": "young",
+  "8-16": "young",
+  "17-25": "young",
+  "26-39": "young",
+  "40-64": "older",
+  "65-74": "older",
+  "75+": "older",
+};
+
 const SEASON_ORDER = ["Summer", "Autumn", "Winter", "Spring"];
 const SEASON_LABELS = {
   Summer: "Summer (Dec–Feb)",
@@ -217,6 +236,10 @@ const chartState = {
   d: { ageGroup: ALL_AGES },
   e: { view: "average" }, // "average" | "year"
 };
+
+// Site-wide setting: the reader's age group (an AGE_ORDER key, or null). Set by interactions.js from ?age= or
+// localStorage before the charts are drawn; changes fire the "agechange" event on document.
+const siteState = { ageGroup: null };
 
 // Loaded data and derived values, filled by load-data.js and read by the chart files
 const chartData = {};

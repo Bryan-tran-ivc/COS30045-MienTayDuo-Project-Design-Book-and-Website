@@ -576,6 +576,59 @@ a {
   background: var(--ink);
   color: #fff;
 }
+/* Secondary button and a button that looks like a link (age picker, age status line) */
+.button-secondary {
+  font: inherit;
+  font-size: 15px;
+  min-height: 36px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+}
+.button-secondary:hover {
+  background: var(--surface-2);
+}
+.link-button {
+  font: inherit;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--blue-dark);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ---------- Reader's age group (SPEC §3.0.4) ---------- */
+.section--compact {
+  padding: 8px 0 56px;
+}
+.age-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.age-message {
+  min-height: 1.6em;
+  margin: 12px 0 0;
+  color: var(--ink-2);
+}
+.age-status {
+  display: inline-block;
+  margin: 0 0 20px;
+  padding: 6px 12px;
+  border: 1px solid var(--grid);
+  border-radius: 8px;
+  background: var(--card);
+  font-size: 15px;
+}
+.age-status[hidden] {
+  display: none;
+}
+
 .select-label {
   font-size: 15px;
   font-weight: 600;

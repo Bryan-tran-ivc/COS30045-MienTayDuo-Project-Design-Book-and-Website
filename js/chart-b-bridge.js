@@ -1,8 +1,42 @@
 /* File: js/chart-b-bridge.js
  * Purpose: Chart B (the bridge between Part A and Part B, RQ4 and RQ7) – each age group's share of pedestrian
- *          admissions next to its share of pedestrian bed days, 2021.
+ *          admissions next to its share of pedestrian bed days, 2021. Marks the reader's age group (SPEC §3.0.4).
  * Project: COS30045 · Team MienTayDuo · "Few cases, long stays"
  */
+
+// Tooltip lines and the matching aria-label for one age group
+const tooltipLinesB = (d) => [
+  { text: `${formatters.pct1(d.caseShare)} of pedestrian admissions (${formatters.count(d.cases)})`, color: COLORS.admissions },
+  { text: `${formatters.pct1(d.bedShare)} of pedestrian bed days (${formatters.count(d.bedDays)})`, color: COLORS.bedDays },
+];
+// A11Y: the label says when this is the reader's own age group, because the band alone is only visual
+const labelB = (d) =>
+  `${AGE_LABELS[d.age]}${d.age === siteState.ageGroup ? " (your age group)" : ""}: ${tooltipLinesB(d)
+    .map((l) => l.text)
+    .join(", ")}`;
+
+// Marks the reader's age group (SPEC §4.B, task 2.1): a light band behind its two bars and a bold axis label.
+// Called after drawing and on every "agechange" event (interactions.js).
+const highlightAgeB = () => {
+  const { x0, size } = chartScales.b;
+  const inner = d3.select("#chart-b .inner-chart");
+  const ageGroup = siteState.ageGroup;
+  inner
+    .select(".age-band")
+    .selectAll("rect")
+    .data(ageGroup ? [ageGroup] : [])
+    .join("rect")
+    .attr("x", (age) => x0(age) - (x0.step() - x0.bandwidth()) / 2)
+    .attr("width", x0.step())
+    .attr("y", 0)
+    .attr("height", size.innerHeight)
+    .attr("fill", COLORS.highlight);
+  inner
+    .selectAll(".x-axis .tick text")
+    .attr("font-weight", (age) => (age === ageGroup ? 700 : null))
+    .style("fill", (age) => (age === ageGroup ? COLORS.ink : null));
+  inner.selectAll(".group-hits rect").attr("aria-label", labelB);
+};
 
 const drawChartB = () => {
   const size = getChartSize("chart-b", "b");
@@ -36,6 +70,8 @@ const drawChartB = () => {
     .range([size.innerHeight, 0]);
   chartScales.b = { x0, x1, y, size };
 
+  // The reader's age-group band sits under the gridlines and bars (filled by highlightAgeB)
+  inner.append("g").attr("class", "age-band");
   drawYAxisWithGrid(inner, y, size.innerWidth, 5, (d) => `${d}%`);
   const xAxis = inner
     .append("g")
@@ -111,16 +147,13 @@ const drawChartB = () => {
     .attr("y", 0)
     .attr("height", size.innerHeight);
 
-  const tooltipLines = (d) => [
-    { text: `${formatters.pct1(d.caseShare)} of pedestrian admissions (${formatters.count(d.cases)})`, color: COLORS.admissions },
-    { text: `${formatters.pct1(d.bedShare)} of pedestrian bed days (${formatters.count(d.bedDays)})`, color: COLORS.bedDays },
-  ];
   makeInteractive(hits, {
-    htmlFor: (d) => tooltipHtml(AGE_LABELS[d.age], tooltipLines(d)),
-    labelFor: (d) => `${AGE_LABELS[d.age]}: ${tooltipLines(d).map((l) => l.text).join(", ")}`,
+    htmlFor: (d) => tooltipHtml(AGE_LABELS[d.age], tooltipLinesB(d)),
+    labelFor: labelB,
     onEnter: (event, d) => groups.classed("is-dimmed", (g) => g.age !== d.age),
     onLeave: () => groups.classed("is-dimmed", false),
   });
+  highlightAgeB();
 
   // Reveal: bars grow from the baseline
   const grow = (instant) =>

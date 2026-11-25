@@ -130,7 +130,7 @@ One site-wide setting: the reader's age group. It only **marks** a group in the 
     2. The heavier the vehicle, the longer the stay — "Hit by a truck or bus: {bdpc_truck} days in hospital per admission."
     3. Pedestrian admissions rise every winter — "Winter: {winter_up} more pedestrian admissions than an average season."
     4. For young children, one road injury in six happens on foot — "Children aged 0–7: {share_0_7} of their road-injury admissions were pedestrians."
-- Age picker (§3.0.4), `h2` "Find your age group": "Choose your age group and the charts will mark it as you read." Select, "Clear" button and the live status.
+- Age picker (§3.0.4), between the key figures and the story map, so the reader picks a group before choosing a story; `h2` "Find your age group": "Choose your age group and the charts will mark it as you read." Select, "Clear" button and the live status.
 
 ### 3.2 The big picture (`big-picture.html`)
 - `h1`: "The big picture"

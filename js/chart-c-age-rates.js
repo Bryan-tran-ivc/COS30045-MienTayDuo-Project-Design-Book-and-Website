@@ -1,6 +1,7 @@
 /* File: js/chart-c-age-rates.js
  * Purpose: Chart C (Story 1, older people, RQ4) – pedestrian bed days or admissions per 100,000 people by age group,
- *          2021, with a reference line at the all-ages rate. A toggle switches the measure.
+ *          2021, with a reference line at the all-ages rate. A toggle switches the measure; the reader's age group
+ *          (SPEC §3.0.4) is marked.
  * Project: COS30045 · Team MienTayDuo · "Few cases, long stays"
  */
 
@@ -39,6 +40,8 @@ const drawChartC = () => {
   const y = d3.scaleLinear().range([size.innerHeight, 0]);
   chartScales.c = { x, y, size };
 
+  // The reader's age-group band sits under the gridlines and bars (filled by updateChartC)
+  inner.append("g").attr("class", "age-band");
   inner.append("g").attr("class", "axis y-axis axis--no-domain");
   const xAxis = inner
     .append("g")
@@ -137,6 +140,28 @@ const updateChartC = (instant = false, atBaseline = false) => {
     .transition(t)
     .attr("y", oldest ? y(oldest[measure.column]) + 12 : 0);
 
+  // Reader's age group (SPEC §4.C, task 2.1): a light band behind its bar and a bold axis label
+  const ageGroup = siteState.ageGroup;
+  inner
+    .select(".age-band")
+    .selectAll("rect")
+    .data(ageGroup ? [ageGroup] : [], (age) => age)
+    .join((enter) =>
+      enter
+        .append("rect")
+        .attr("x", (age) => x(age) - (x.step() - x.bandwidth()) / 2)
+        .attr("y", 0)
+        .attr("height", size.innerHeight)
+        .attr("fill", COLORS.highlight),
+    )
+    .attr("width", x.step())
+    .transition(t)
+    .attr("x", (age) => x(age) - (x.step() - x.bandwidth()) / 2);
+  inner
+    .selectAll(".x-axis .tick text")
+    .attr("font-weight", (age) => (age === ageGroup ? 700 : null))
+    .style("fill", (age) => (age === ageGroup ? COLORS.ink : null));
+
   d3.select("#chart-c-subtitle").text(measure.subtitle);
 
   // Focusable hit areas (one per bar column) with tooltips for the current measure
@@ -157,6 +182,10 @@ const updateChartC = (instant = false, atBaseline = false) => {
   ];
   makeInteractive(hits, {
     htmlFor: (d) => tooltipHtml(AGE_LABELS[d["Age group"]], lines(d)),
-    labelFor: (d) => `${AGE_LABELS[d["Age group"]]}: ${lines(d).map((l) => l.text).join(", ")}`,
+    // A11Y: the label names the reader's own age group, because the band alone is only visual
+    labelFor: (d) =>
+      `${AGE_LABELS[d["Age group"]]}${d["Age group"] === siteState.ageGroup ? " (your age group)" : ""}: ${lines(d)
+        .map((l) => l.text)
+        .join(", ")}`,
   });
 };
