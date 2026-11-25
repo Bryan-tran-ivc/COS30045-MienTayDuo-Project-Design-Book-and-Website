@@ -1,0 +1,282 @@
+/* File: css/visualisation.css
+ * Purpose: Styles shared by all six D3 charts: figures, legends, axes, marks, labels, reference lines, tooltip,
+ *          messages and data tables (SPEC.md §4.0).
+ * Project: COS30045 · Team MienTayDuo · "Few cases, long stays"
+ */
+
+.chart-figure {
+  margin: 0;
+  background: var(--card);
+  border: 1px solid var(--grid);
+  border-radius: var(--radius);
+  padding: 20px 20px 14px;
+}
+.chart-title {
+  font-size: 19px;
+  margin-bottom: 2px;
+}
+.chart-subtitle {
+  color: var(--ink-2);
+  font-size: 14px;
+  margin: 0 0 6px;
+}
+.chart {
+  position: relative;
+  width: 100%;
+  min-height: 120px;
+}
+.chart svg {
+  display: block;
+  overflow: visible;
+}
+.chart-note {
+  color: var(--ink-2);
+  font-size: 13px;
+  margin: 6px 0 0;
+}
+
+/* Legend (HTML, so it wraps on small screens) */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 4px;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+.swatch--blue {
+  background: var(--blue);
+}
+.swatch--orange {
+  background: var(--orange);
+}
+.swatch--grey {
+  background: var(--grey);
+}
+.swatch--dot-grey,
+.swatch--dot-blue {
+  border-radius: 50%;
+}
+.swatch--dot-grey {
+  background: var(--grey);
+}
+.swatch--dot-blue {
+  background: var(--blue);
+}
+.swatch--ref {
+  height: 0;
+  width: 22px;
+  border-radius: 0;
+  border-top: 1.5px solid var(--ink-2);
+}
+.swatch--orange-dashed {
+  height: 0;
+  width: 22px;
+  border-radius: 0;
+  border-top: 2.5px dashed var(--orange);
+}
+
+/* Axes and gridlines: recessive (SPEC §4.0) */
+.axis text {
+  font-family: var(--font);
+  font-size: 12px;
+  fill: var(--ink-2);
+}
+.axis .domain {
+  stroke: var(--border);
+}
+.axis .tick line {
+  stroke: var(--grid);
+}
+.axis--no-domain .domain {
+  display: none;
+}
+.axis--no-ticks .tick line {
+  display: none;
+}
+.axis-title {
+  font-size: 12px;
+  fill: var(--ink-2);
+}
+
+/* Labels: a halo in the surface colour keeps text readable where it crosses a line */
+.chart-label,
+.value-label,
+.annotation,
+.ref-label,
+.break-label,
+.too-few {
+  font-family: var(--font);
+  font-size: 12px;
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: var(--card);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.annotation {
+  font-weight: 700;
+  font-size: 13px;
+}
+.ref-label,
+.break-label {
+  fill: var(--ink-2);
+}
+.too-few {
+  fill: var(--ink-3);
+  font-style: italic;
+}
+.ref-line {
+  stroke: var(--ink-2);
+  stroke-width: 1;
+}
+.break-line {
+  stroke: var(--grey);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+.bracket {
+  stroke: var(--ink-2);
+  stroke-width: 1;
+  fill: none;
+}
+.connector {
+  stroke: var(--grid);
+  stroke-width: 3;
+}
+.guide-line {
+  stroke: var(--ink-2);
+  stroke-width: 1;
+  pointer-events: none;
+}
+
+/* Marks */
+.line {
+  fill: none;
+  stroke-width: 2;
+}
+.line--dashed {
+  stroke-dasharray: 6 4;
+}
+.point {
+  stroke: var(--card);
+  stroke-width: 1.5;
+}
+.hit {
+  fill: transparent;
+  cursor: default;
+}
+.is-dimmed {
+  opacity: 0.3;
+  transition: opacity 0.2s;
+}
+
+/* A11Y: visible focus on SVG marks (outline is drawn by :focus-visible; the stroke helps where outline is clipped) */
+.chart [tabindex]:focus {
+  outline: none;
+}
+.chart [tabindex]:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+.chart .hit:focus-visible {
+  stroke: var(--focus);
+  stroke-width: 2;
+}
+
+/* Message shown inside a figure when its data cannot be loaded */
+.chart-message {
+  padding: 24px;
+  background: var(--surface-2);
+  border-radius: 8px;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+/* Tooltip (one for the whole page) */
+.tooltip {
+  position: fixed;
+  z-index: 60;
+  max-width: 280px;
+  padding: 10px 12px;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.45;
+  pointer-events: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+.tooltip strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+.tooltip .tt-swatch {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  margin-right: 6px;
+}
+
+/* Data tables (A11Y: the same numbers as the chart, readable by screen readers) */
+.data-table {
+  margin-top: 10px;
+  font-size: 14px;
+}
+.data-table summary {
+  cursor: pointer;
+  color: var(--blue-dark);
+  font-weight: 600;
+  padding: 4px 0;
+}
+.table-wrap {
+  overflow-x: auto;
+}
+.data-table table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.data-table caption {
+  text-align: left;
+  color: var(--ink-2);
+  font-size: 13px;
+  padding-bottom: 6px;
+}
+.data-table th,
+.data-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--grid);
+  text-align: left;
+  vertical-align: top;
+}
+.data-table th {
+  font-weight: 600;
+  background: var(--surface-2);
+}
+.data-table td.num,
+.data-table th.num {
+  text-align: right;
+}
+
+@media (max-width: 767px) {
+  .chart-figure {
+    padding: 14px 12px 10px;
+  }
+}

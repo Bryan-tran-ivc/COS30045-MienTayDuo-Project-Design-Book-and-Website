@@ -1,0 +1,56 @@
+Age group,Counterparty,Hospitalisations,Bed days,bed_days_per_case
+0-7,2- or 3- wheeled motor vehicle,13,52,4.0
+0-7,"Car, pick-up truck or van",665,2861,4.302255639097744
+0-7,Heavy transport vehicle or bus,16,51,3.1875
+0-7,Other and unspecified transport accidents,18,40,2.2222222222222223
+0-7,Other non-motor vehicle,2,4,2.0
+0-7,Pedal cycle,16,31,1.9375
+0-7,Pedestrian or animal,10,41,4.1
+17-25,2- or 3- wheeled motor vehicle,62,625,10.080645161290322
+17-25,"Car, pick-up truck or van",2138,15106,7.065481758652947
+17-25,Heavy transport vehicle or bus,74,1530,20.675675675675677
+17-25,Other and unspecified transport accidents,65,270,4.153846153846154
+17-25,Other non-motor vehicle,14,169,12.071428571428571
+17-25,Pedal cycle,25,43,1.72
+17-25,Pedestrian or animal,4,7,1.75
+17-25,Train,17,544,32.0
+26-39,2- or 3- wheeled motor vehicle,52,387,7.4423076923076925
+26-39,"Car, pick-up truck or van",2526,20320,8.044338875692794
+26-39,Heavy transport vehicle or bus,143,2212,15.468531468531468
+26-39,Other and unspecified transport accidents,96,564,5.875
+26-39,Other non-motor vehicle,19,169,8.894736842105264
+26-39,Pedal cycle,46,344,7.478260869565218
+26-39,Pedestrian or animal,12,43,3.5833333333333335
+26-39,Train,15,260,17.333333333333332
+40-64,2- or 3- wheeled motor vehicle,99,815,8.232323232323232
+40-64,"Car, pick-up truck or van",3532,39799,11.268120045300114
+40-64,Heavy transport vehicle or bus,175,5605,32.02857142857143
+40-64,Other and unspecified transport accidents,138,1118,8.101449275362318
+40-64,Other non-motor vehicle,16,145,9.0625
+40-64,Pedal cycle,101,698,6.910891089108911
+40-64,Pedestrian or animal,22,154,7.0
+40-64,Train,12,548,45.666666666666664
+65-74,2- or 3- wheeled motor vehicle,34,571,16.794117647058822
+65-74,"Car, pick-up truck or van",1365,20922,15.327472527472528
+65-74,Heavy transport vehicle or bus,62,1610,25.967741935483872
+65-74,Other and unspecified transport accidents,23,610,26.52173913043478
+65-74,Other non-motor vehicle,2,16,8.0
+65-74,Pedal cycle,53,446,8.415094339622641
+65-74,Pedestrian or animal,7,121,17.285714285714285
+65-74,Train,6,110,18.333333333333332
+75+,2- or 3- wheeled motor vehicle,24,946,39.416666666666664
+75+,"Car, pick-up truck or van",1660,32007,19.28132530120482
+75+,Heavy transport vehicle or bus,60,1612,26.866666666666667
+75+,Other and unspecified transport accidents,56,981,17.517857142857142
+75+,Other non-motor vehicle,8,30,3.75
+75+,Pedal cycle,39,376,9.64102564102564
+75+,Pedestrian or animal,21,427,20.333333333333332
+75+,Train,3,54,18.0
+8-16,2- or 3- wheeled motor vehicle,22,54,2.4545454545454546
+8-16,"Car, pick-up truck or van",1539,6243,4.056530214424951
+8-16,Heavy transport vehicle or bus,64,426,6.65625
+8-16,Other and unspecified transport accidents,41,79,1.9268292682926829
+8-16,Other non-motor vehicle,3,8,2.6666666666666665
+8-16,Pedal cycle,15,21,1.4
+8-16,Pedestrian or animal,8,14,1.75
+8-16,Train,10,138,13.8
