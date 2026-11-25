@@ -1,6 +1,7 @@
 /* File: js/chart-b-bridge.js
  * Purpose: Chart B (the bridge between Part A and Part B, RQ4 and RQ7) – each age group's share of pedestrian
- *          admissions next to its share of pedestrian bed days, 2021. Marks the reader's age group (SPEC §3.0.4).
+ *          admissions next to its share of pedestrian bed days, 2021. Marks the reader's age group (SPEC §3.0.4);
+ *          selecting a group opens the story about it.
  * Project: COS30045 · Team MienTayDuo · "Few cases, long stays"
  */
 
@@ -9,11 +10,15 @@ const tooltipLinesB = (d) => [
   { text: `${formatters.pct1(d.caseShare)} of pedestrian admissions (${formatters.count(d.cases)})`, color: COLORS.admissions },
   { text: `${formatters.pct1(d.bedShare)} of pedestrian bed days (${formatters.count(d.bedDays)})`, color: COLORS.bedDays },
 ];
-// A11Y: the label says when this is the reader's own age group, because the band alone is only visual
+// The story page about an age group, with the group in the URL so it is marked there (SPEC §4.B, task 2.3)
+const storyForAgeB = (age) => STORIES[STORY_FOR_AGE[age]];
+const storyUrlB = (age) => `${storyForAgeB(age).page}?${AGE_PARAM}=${encodeURIComponent(age)}`;
+
+// A11Y: the label says when this is the reader's own age group (the band alone is only visual) and where it leads
 const labelB = (d) =>
   `${AGE_LABELS[d.age]}${d.age === siteState.ageGroup ? " (your age group)" : ""}: ${tooltipLinesB(d)
     .map((l) => l.text)
-    .join(", ")}`;
+    .join(", ")}. Opens ${storyForAgeB(d.age).label}.`;
 
 // Marks the reader's age group (SPEC §4.B, task 2.1): a light band behind its two bars and a bold axis label.
 // Called after drawing and on every "agechange" event (interactions.js).
@@ -153,6 +158,24 @@ const drawChartB = () => {
     onEnter: (event, d) => groups.classed("is-dimmed", (g) => g.age !== d.age),
     onLeave: () => groups.classed("is-dimmed", false),
   });
+
+  // Open the age group's story: click, or Enter on the focused group. On a touch screen the first tap shows the
+  // tooltip (so the numbers can be read) and a second tap on the same group opens the story.
+  // A11Y: each group is a link for screen readers; its label ends with the story it opens
+  let tappedAge = null;
+  hits
+    .attr("role", "link")
+    .style("cursor", "pointer")
+    .on("click", (event, d) => {
+      if (event.pointerType === "touch" && tappedAge !== d.age) {
+        tappedAge = d.age;
+        return;
+      }
+      window.location.href = storyUrlB(d.age);
+    })
+    .on("keydown", (event, d) => {
+      if (event.key === "Enter") window.location.href = storyUrlB(d.age);
+    });
   highlightAgeB();
 
   // Reveal: bars grow from the baseline

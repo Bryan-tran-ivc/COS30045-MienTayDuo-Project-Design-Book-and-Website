@@ -139,7 +139,7 @@ One site-wide setting: the reader's age group. It only **marks** a group in the 
 - **Chart A** (§4.A, title `h2`) with its checkbox, legend buttons and year scrubbing.
 - Note under chart A: "Dashed grey lines mark changes in how cases or bed days were counted; hover or focus a line to read about it."
 - Section `h2` "Who makes the cases, and who fills the beds?": "Young people make most of the cases, while older people fill most of the beds. People under 40 were {under40_case_share} of pedestrian admissions in 2021 but only {under40_bed_share} of the bed days. People aged 65 and over were {over65_case_share} of admissions and {over65_bed_share} of bed days."
-- **Chart B** (§4.B, title `h3`). Note under it: "Select an age group to open its story."
+- **Chart B** (§4.B, title `h3`). Note under it: "Select an age group to open its story: 40 and over, Story 1 (older pedestrians); under 40, Story 4 (children and young people). On a touch screen, tap twice."
 - Formula card as the hand-off to the stories: "Bed days = number of cases × days per case", with "A · Longer stays →" (`story-older.html`, orange outline) and "B · More cases →" (`story-winter.html`, blue outline).
 
 ### 3.3 Story 1 — Older people (`story-older.html`)
@@ -224,7 +224,7 @@ Kicker "Part B · Story 4 · Children and young people". Age status line under t
 - Bars: blue = share of admissions, orange = share of bed days. Legend above plot.
 - Hover/focus an age group (a transparent rect over the whole group): the other groups fade to 30% opacity; tooltip "65–74 yrs · 10.3% of pedestrian admissions · 16.7% of pedestrian bed days".
 - Annotations (desktop only, hidden below 768 px): a bracket over the under-40 groups with "Under 40 / {under40_case_share} of cases · {under40_bed_share} of bed days" and one over 65–74 and 75+ with "65 and over / {over65_case_share} of cases · {over65_bed_share} of bed days". Text is centred over its bracket but moved inwards if it would be cut off at the SVG edge.
-- **Open a story (v2.0, task 2.3):** clicking an age group, or pressing Enter on its focused hit area, opens its story page with the group in the URL: 40–64, 65–74 and 75+ → `story-older.html?age=…`; 0–7 to 26–39 → `story-young.html?age=…` (`STORY_FOR_AGE`). The hit areas get `role="link"`, a pointer cursor, and an `aria-label` ending "Opens story 1: older pedestrians." (or story 4). Hover and focus still fade the other groups.
+- **Open a story (v2.0, task 2.3):** clicking an age group, or pressing Enter on its focused hit area, opens its story page with the group in the URL: 40–64, 65–74 and 75+ → `story-older.html?age=…`; 0–7 to 26–39 → `story-young.html?age=…` (`STORY_FOR_AGE`). The hit areas get `role="link"`, a pointer cursor, and an `aria-label` ending "Opens Story 1 · Older pedestrians." (or Story 4). Hover and focus still fade the other groups. On a touch screen the first tap shows the tooltip and a second tap on the same group opens the story, so the numbers can be read first.
 - **Reader's age group (v2.0, task 2.1):** when `siteState.ageGroup` is set, a light band (`COLORS.highlight`) is drawn behind that group's two bars, its x-axis label is bold, and its hit area's `aria-label` ends with "(your age group)". Redrawn on `agechange`.
 
 ### 4.C Story 1 — `chart-c-age-rates.js` (RQ4)
