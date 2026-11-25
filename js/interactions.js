@@ -40,6 +40,12 @@ const initChartControls = () => {
     chartState.c.measure = value;
     if (drawnCharts.has("c")) updateChartC();
   });
+  // Chart C order: age order or highest first (task 2.4)
+  wireToggle("toggle-c-order", (value) => {
+    if (chartState.c.order === value) return;
+    chartState.c.order = value;
+    if (drawnCharts.has("c")) updateChartC();
+  });
   wireToggle("toggle-e", (value) => {
     if (chartState.e.view === value) return;
     chartState.e.view = value;

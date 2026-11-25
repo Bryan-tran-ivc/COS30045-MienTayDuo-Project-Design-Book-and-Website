@@ -233,7 +233,7 @@ const formatters = {
 // ---------- Current state of each chart's control (changed by interactions.js) ----------
 const chartState = {
   a: { showWithoutDeaths: false, highlight: null, year: null }, // highlight: null | "bed" | "adm"; year: last scrubbed
-  c: { measure: "bedDays" }, // "bedDays" | "admissions"
+  c: { measure: "bedDays", order: "age" }, // measure: "bedDays" | "admissions"; order: "age" | "value"
   d: { ageGroup: ALL_AGES },
   e: { view: "average" }, // "average" | "year"
 };

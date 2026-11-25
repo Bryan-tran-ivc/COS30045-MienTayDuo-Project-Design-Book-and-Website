@@ -1,7 +1,7 @@
 /* File: js/chart-c-age-rates.js
  * Purpose: Chart C (Story 1, older people, RQ4) – pedestrian bed days or admissions per 100,000 people by age group,
- *          2021, with a reference line at the all-ages rate. A toggle switches the measure; the reader's age group
- *          (SPEC §3.0.4) is marked.
+ *          2021, with a reference line at the all-ages rate. Toggles switch the measure and the order (age order or
+ *          highest first); the reader's age group (SPEC §3.0.4) is marked.
  * Project: COS30045 · Team MienTayDuo · "Few cases, long stays"
  */
 
@@ -54,8 +54,9 @@ const drawChartC = () => {
   inner.append("g").attr("class", "value-labels");
   const ref = inner.append("g").attr("class", "reference");
   ref.append("line").attr("class", "ref-line").attr("x1", 0).attr("x2", size.innerWidth);
-  ref.append("text").attr("class", "ref-label").attr("x", 0).attr("dy", "-0.45em");
-  inner.append("text").attr("class", "annotation annotation-75").attr("text-anchor", "end");
+  ref.append("line").attr("class", "ref-line ref-sample"); // short line sample next to the label on phones
+  ref.append("text").attr("class", "ref-label");
+  inner.append("text").attr("class", "annotation annotation-75");
   inner.append("g").attr("class", "hits");
 
   if (revealed.c) {
@@ -99,6 +100,18 @@ const updateChartC = (instant = false, atBaseline = false) => {
     .transition(t)
     .call(d3.axisLeft(y).ticks(5).tickSize(-size.innerWidth).tickPadding(8).tickFormat(d3.format(",")));
 
+  // Sort (SPEC §4.C, task 2.4): age order, or highest value of the current measure first. Bars, labels, the
+  // age band and the axis labels all move to their new places in one keyed transition.
+  const order =
+    chartState.c.order === "value"
+      ? [...rows].sort((a, b) => b[measure.column] - a[measure.column]).map((d) => d["Age group"])
+      : AGE_ORDER.filter((age) => rows.some((d) => d["Age group"] === age));
+  x.domain(order);
+  inner
+    .select(".x-axis")
+    .transition(t)
+    .call(d3.axisBottom(x).tickFormat((age) => (isMobile() ? age : AGE_LABELS[age])).tickPadding(10));
+
   const barAt = (d) => {
     const top = atBaseline ? size.innerHeight : y(d[measure.column]);
     return barPathVertical(x(d["Age group"]), top, Math.max(MIN_BAR_WIDTH, x.bandwidth()), size.innerHeight - top);
@@ -116,28 +129,49 @@ const updateChartC = (instant = false, atBaseline = false) => {
     .select(".value-labels")
     .selectAll("text")
     .data(atBaseline ? [] : rows, (d) => d["Age group"])
-    .join("text")
+    .join((enter) => enter.append("text").attr("x", (d) => x(d["Age group"]) + x.bandwidth() / 2))
     .attr("class", "value-label")
     .attr("text-anchor", "middle")
-    .attr("x", (d) => x(d["Age group"]) + x.bandwidth() / 2)
     .transition(t)
+    .attr("x", (d) => x(d["Age group"]) + x.bandwidth() / 2)
     .attr("y", (d) => y(d[measure.column]) - 6)
     .text((d) => measure.format(d[measure.column]));
 
-  inner.select(".ref-line").transition(t).attr("y1", y(allAges)).attr("y2", y(allAges));
+  // Reference line. Wider screens: label just above the line, at the end of the chart whose bar is lower (left in
+  // age order, right when sorted highest first), so it never sits on a tall bar. Phones: the label moves to the empty
+  // strip above the plot with a short line sample, because there it collided with the value labels of the low bars
+  // (the same fix as chart F).
+  const mobile = isMobile();
+  const sampleY = -12;
+  const valueAt = (age) => rows.find((d) => d["Age group"] === age)[measure.column];
+  const labelOnRight = !mobile && valueAt(order[order.length - 1]) < valueAt(order[0]);
+  inner.select(".ref-line:not(.ref-sample)").transition(t).attr("y1", y(allAges)).attr("y2", y(allAges));
+  inner
+    .select(".ref-sample")
+    .attr("x1", 0)
+    .attr("x2", 16)
+    .attr("y1", sampleY)
+    .attr("y2", sampleY)
+    .attr("display", mobile ? null : "none");
   inner
     .select(".ref-label")
+    .attr("dy", mobile ? "0.35em" : "-0.45em")
+    .attr("text-anchor", labelOnRight ? "end" : "start")
+    .text(`All ages: ${measure.format(allAges)}`)
     .transition(t)
-    .attr("y", y(allAges))
-    .text(`All ages: ${measure.format(allAges)}`);
+    .attr("x", mobile ? 22 : labelOnRight ? size.innerWidth : 0)
+    .attr("y", mobile ? sampleY : y(allAges));
 
-  // Annotation on the 75+ bar, computed from the data
+  // Annotation on the 75+ bar, computed from the data. It sits left of the bar when the bar is in the right half of
+  // the chart and right of it otherwise, so it is never cut off when the bars are sorted.
   const oldest = rows.find((d) => d["Age group"] === "75+");
+  const oldestOnRight = x("75+") + x.bandwidth() / 2 > size.innerWidth / 2;
   inner
     .select(".annotation-75")
-    .attr("x", x("75+") - 6)
+    .attr("text-anchor", oldestOnRight ? "end" : "start")
     .text(atBaseline || !oldest ? "" : `${formatters.ratio1(oldest[measure.column] / allAges)}× the average`)
     .transition(t)
+    .attr("x", oldestOnRight ? x("75+") - 6 : x("75+") + x.bandwidth() + 6)
     .attr("y", oldest ? y(oldest[measure.column]) + 12 : 0);
 
   // Reader's age group (SPEC §4.C, task 2.1): a light band behind its bar and a bold axis label
