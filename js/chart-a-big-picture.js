@@ -192,8 +192,10 @@ const drawChartA = () => {
 
   scrub
     .on("mousemove", (event) => showYear(nearestYear(d3.pointer(event, inner.node())[0]), event))
-    // A tap on a touch screen arrives as a click
-    .on("click", (event) => showYear(nearestYear(d3.pointer(event, inner.node())[0]), null))
+    // A tap on a touch screen arrives as a click: the tooltip then sits by the point, not under the finger
+    .on("click", (event) =>
+      showYear(nearestYear(d3.pointer(event, inner.node())[0]), event.pointerType === "touch" ? null : event),
+    )
     .on("mouseleave", hideYear)
     .on("focus", () => showYear(startYear(), null))
     .on("blur", hideYear)

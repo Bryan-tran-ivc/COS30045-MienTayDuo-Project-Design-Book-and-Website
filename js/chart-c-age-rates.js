@@ -142,14 +142,14 @@ const updateChartC = (instant = false, atBaseline = false) => {
   // strip above the plot with a short line sample, because there it collided with the value labels of the low bars
   // (the same fix as chart F).
   const mobile = isMobile();
-  const sampleY = -12;
+  const { sampleY, sampleLength, labelX } = REF_LABEL_TOP;
   const valueAt = (age) => rows.find((d) => d["Age group"] === age)[measure.column];
   const labelOnRight = !mobile && valueAt(order[order.length - 1]) < valueAt(order[0]);
   inner.select(".ref-line:not(.ref-sample)").transition(t).attr("y1", y(allAges)).attr("y2", y(allAges));
   inner
     .select(".ref-sample")
     .attr("x1", 0)
-    .attr("x2", 16)
+    .attr("x2", sampleLength)
     .attr("y1", sampleY)
     .attr("y2", sampleY)
     .attr("display", mobile ? null : "none");
@@ -159,7 +159,7 @@ const updateChartC = (instant = false, atBaseline = false) => {
     .attr("text-anchor", labelOnRight ? "end" : "start")
     .text(`All ages: ${measure.format(allAges)}`)
     .transition(t)
-    .attr("x", mobile ? 22 : labelOnRight ? size.innerWidth : 0)
+    .attr("x", mobile ? labelX : labelOnRight ? size.innerWidth : 0)
     .attr("y", mobile ? sampleY : y(allAges));
 
   // Annotation on the 75+ bar, computed from the data. It sits left of the bar when the bar is in the right half of
@@ -198,12 +198,17 @@ const updateChartC = (instant = false, atBaseline = false) => {
 
   d3.select("#chart-c-subtitle").text(measure.subtitle);
 
-  // Focusable hit areas (one per bar column) with tooltips for the current measure
+  // Focusable hit areas (one per bar column) with tooltips for the current measure.
+  // A11Y: kept in the on-screen order (sort + .order()), so Tab moves left to right also after sorting
   const hits = inner
     .select(".hits")
     .selectAll("rect")
-    .data(rows, (d) => d["Age group"])
+    .data(
+      [...rows].sort((a, b) => order.indexOf(a["Age group"]) - order.indexOf(b["Age group"])),
+      (d) => d["Age group"],
+    )
     .join("rect")
+    .order()
     .attr("class", "hit")
     .attr("x", (d) => x(d["Age group"]) - (x.step() - x.bandwidth()) / 2)
     .attr("width", x.step())

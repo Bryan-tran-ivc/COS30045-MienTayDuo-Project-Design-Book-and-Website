@@ -73,6 +73,8 @@ const POINT_RADIUS = 4; // 8 px diameter
 const BAR_CORNER = 2;
 const MIN_BAR_WIDTH = 8;
 const DIMMED_OPACITY = 0.3; // series or groups that are not highlighted (SPEC §4.A, §4.B)
+// Reference label placed in the strip above the plot on phones (chart C): line sample, then the label (px)
+const REF_LABEL_TOP = { sampleY: -12, sampleLength: 16, labelX: 22 };
 
 // ---------- Data rules ----------
 const MIN_CELL = 20; // SPEC §2.3: no mark for fewer than 20 admissions

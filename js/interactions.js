@@ -323,12 +323,13 @@ const initAgeGroup = () => {
 // The charts on this page follow a change of age group (chart F listens in its own file, task 2.9)
 document.addEventListener("agechange", (event) => {
   const ageGroup = event.detail.ageGroup;
+  // A chart not yet scrolled into view stays at its baseline, so its grow-in reveal still plays later
   if (drawnCharts.has("b")) highlightAgeB();
-  if (drawnCharts.has("c")) updateChartC();
+  if (drawnCharts.has("c")) updateChartC(false, !revealed.c);
   if (drawnCharts.has("d")) {
     chartState.d.ageGroup = ageGroup || ALL_AGES;
     d3.select("#select-d").property("value", chartState.d.ageGroup);
-    updateChartD();
+    updateChartD(false, !revealed.d);
   }
 });
 
