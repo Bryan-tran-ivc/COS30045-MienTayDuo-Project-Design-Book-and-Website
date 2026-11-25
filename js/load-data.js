@@ -1,11 +1,13 @@
 /* File: js/load-data.js
- * Purpose: Loads every KNIME output CSV, converts and validates it, computes the few values the browser calculates
- *          (SPEC.md §2.2), fills the numbers in the story text, then draws each chart whose data loaded and wires up
- *          the controls. Loaded last, after all chart files (SPEC.md §6).
+ * Purpose: Works out which KNIME output CSVs this page needs (its charts, the numbers in its text and any extra
+ *          files listed for the page), loads only those, converts and validates them, computes the few values the
+ *          browser calculates (SPEC.md §2.2), fills the numbers in the text, then draws each chart on the page whose
+ *          data loaded and wires up the controls. Loaded last on every page (SPEC.md §6).
  * Project: COS30045 · Team MienTayDuo · "Few cases, long stays"
  */
 
-// Which data files each chart needs, and the function that draws it
+// Which data files each chart needs, and the function that draws it. A chart is drawn only on pages that have its
+// container, so the draw function (from the page's chart file) is looked up only there.
 const CHARTS = {
   a: { containerId: "chart-a", files: ["shares", "totals"], draw: () => drawChartA() },
   b: { containerId: "chart-b", files: ["age"], draw: () => drawChartB() },
@@ -13,6 +15,39 @@ const CHARTS = {
   d: { containerId: "chart-d", files: ["vehicle", "vehicleByAge"], draw: () => drawChartD() },
   e: { containerId: "chart-e", files: ["seasonAverage", "seasonByYear"], draw: () => drawChartE() },
   f: { containerId: "chart-f", files: ["age"], draw: () => drawChartF() },
+};
+
+// Which data files each number in the text (data-stat key) is computed from (SPEC §6, per-page loading)
+const STAT_FILES = {
+  beds_per_day: ["shares"],
+  beds_freed: ["shares"],
+  ped_adm_share_2021: ["shares"],
+  ped_bed_share_2021: ["shares"],
+  ped_bdpc_2021: ["shares"],
+  gap_min: ["shares"],
+  gap_max: ["shares"],
+  all_bdpc_2021: ["totals"],
+  under40_case_share: ["age"],
+  under40_bed_share: ["age"],
+  over65_case_share: ["age"],
+  over65_bed_share: ["age"],
+  bd_rate_75: ["age"],
+  bd_rate_all: ["age"],
+  bd_rate_ratio_75: ["age"],
+  bdpc_75: ["age"],
+  share_0_7: ["age"],
+  share_all: ["age"],
+  bdpc_car: ["vehicle"],
+  bdpc_truck: ["vehicle"],
+  bdpc_train: ["vehicle"],
+  truck_case_share: ["vehicle"],
+  truck_bed_share: ["vehicle"],
+  car_case_share: ["vehicle"],
+  winter_up: ["seasonAverage"],
+  summer_down: ["seasonAverage"],
+  share_winter: ["seasonAverage"],
+  share_summer: ["seasonAverage"],
+  n_years: ["seasonByYear"],
 };
 
 // Charts that drew successfully (redrawn on resize by interactions.js)
@@ -169,8 +204,28 @@ const computeDerivedValues = () => {
   chartData.derived = derived;
 };
 
+// ---------- What this page needs ----------
+const pageName = document.body.dataset.page || "unknown page";
+
+// Charts whose container is on this page
+const chartsOnPage = Object.entries(CHARTS).filter(([, chart]) => document.getElementById(chart.containerId));
+
+// Files for this page: its charts, the data-stat numbers in its text, and any extra files listed for the page
+const filesForPage = () => {
+  const files = new Set();
+  chartsOnPage.forEach(([, chart]) => chart.files.forEach((file) => files.add(file)));
+  const statKeys = new Set([...document.querySelectorAll("[data-stat]")].map((el) => el.dataset.stat));
+  statKeys.forEach((key) => {
+    if (STAT_FILES[key]) STAT_FILES[key].forEach((file) => files.add(file));
+    else console.error(`data-stat "${key}" on ${pageName} is not listed in STAT_FILES (load-data.js)`);
+  });
+  (EXTRA_FILES_FOR_PAGE[document.body.dataset.page] || []).forEach((file) => files.add(file));
+  return [...files].filter((file) => DATA_FILES[file]);
+};
+
 // ---------- Start ----------
-const fileKeys = Object.keys(DATA_FILES);
+const fileKeys = filesForPage();
+console.log(`${pageName}: loading ${fileKeys.length ? fileKeys.join(", ") : "no data files"}`);
 
 Promise.allSettled(fileKeys.map(loadFile)).then((results) => {
   const failed = new Set();
@@ -192,7 +247,7 @@ Promise.allSettled(fileKeys.map(loadFile)).then((results) => {
   fillStats(stats);
 
   const openedFromFile = window.location.protocol === "file:";
-  Object.entries(CHARTS).forEach(([key, chart]) => {
+  chartsOnPage.forEach(([key, chart]) => {
     const missingFiles = chart.files.filter((file) => failed.has(file));
     if (missingFiles.length > 0) {
       // Error handling: this chart shows a message; the other charts still draw

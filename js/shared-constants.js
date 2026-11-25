@@ -141,6 +141,12 @@ const DATA_FILES = {
   },
 };
 
+// Files a page needs beyond its charts and the numbers in its text, by <body data-page> (SPEC §6). load-data.js
+// works out the rest from the page itself.
+const EXTRA_FILES_FOR_PAGE = {
+  "what-can-be-done": ["age"], // beds-freed calculator (Huy, task 2.10) uses each age group's bed days
+};
+
 // ---------- Fixed category orders and display labels ----------
 const AGE_ORDER = ["0-7", "8-16", "17-25", "26-39", "40-64", "65-74", "75+"];
 const AGE_LABELS = {
