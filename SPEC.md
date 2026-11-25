@@ -87,7 +87,7 @@ Eight pages at the site root, each `lang="en-AU"`, in this reading order:
 | 7 | `what-can-be-done.html` | `what-can-be-done` | Count bed days, not just cases | Response cards, beds-freed calculator | Huy |
 | 8 | `about.html` | `about` | About the data | Data, limitations, references, credits, glossary | Huy |
 
-Every page: `<title>` is "{short page name} · Few cases, long stays" (Home: "Few cases, long stays · Pedestrian road injuries in Australia"); `<body data-page="…">`; landmarks `header` (brand + nav), `main id="main"`, `footer`. **One `h1` per page**, `h2` for each section (and for a chart title placed directly under the `h1`), `h3` inside a section; no skipped levels. Each section is a `<section>` with an `aria-labelledby` heading. Text marked `{…}` is filled from data at run time (§2.2) with `<span data-stat="key">`, so the text can never drift from the data. Pages with a chart end with the shared `#tooltip` element.
+Every page: `<title>` is "{short page name} · Few cases, long stays" (Home: "Few cases, long stays · Pedestrian road injuries in Australia"); `<body data-page="…">`; landmarks `header` (brand + nav), `main id="main"`, `footer`. **One `h1` per page**, `h2` for each section (and for a chart title placed directly under the `h1`), `h3` inside a section; no skipped levels. Each section is a `<section>` with an `aria-labelledby` heading. Text marked `{…}` is filled from data at run time (§2.2) with `<span data-stat="key">`, so the text can never drift from the data. Every page ends with the shared `#tooltip` element (`helpers.js` expects it).
 
 ### 3.0 Shared shell (every page)
 
@@ -97,7 +97,8 @@ There is no build step, so the header and footer are plain HTML **copied into ea
 - Nav `<nav class="site-nav" aria-label="Main">`, in this order: **Home** · **Big picture** · **Part A · Longer stays ▾** (Story 1 · Older people, Story 2 · Heavier vehicles) · **Part B · More cases ▾** (Story 3 · Winter, Story 4 · Children and young people) · **What can be done** · **About the data**.
 - The two parts are disclosure buttons (`<button aria-expanded aria-controls>`) that open a short list of their two stories. Wide screens: the list drops down under the button and closes on Escape (focus returns to the button), on a click outside, or when focus leaves the group. Only one part list is open at a time.
 - Current page: its link carries `aria-current="page"` in that page's copy of the header (so it works without JavaScript), shown with an orange underline. On a story page, the part button that contains it is underlined as well (class `is-current`).
-- Below 768 px: the whole nav sits behind a "Menu" button (`aria-expanded`, `aria-controls`); the part lists open inline inside it. Escape closes the open part list first, then the menu.
+- Visible labels of the two part buttons: "A · Longer stays" and "B · More cases" (the same as the formula-card links); each part list has an `aria-label` with the full part question.
+- Below **1024 px** (the full row of eight entries does not fit narrower), the whole nav sits behind a "Menu" button (`aria-expanded`, `aria-controls`); the part lists open inline inside it. Escape closes the open part list first, then the menu. The navigation works before the data has loaded.
 - A "Skip to content" link is the first focusable element.
 - No scroll-spy (v1.0 had one; each section is now a page).
 
@@ -369,7 +370,7 @@ Every item applies to **all eight pages at 375, 768 and 1280 px**. `tests/check-
 
 Navigation (v2.0)
 - [ ] Every nav link opens its page; that page's link has `aria-current="page"`, and on story pages the part button is marked as well.
-- [ ] Part lists open and close with mouse and keyboard (Enter/Space on the button, Escape closes and returns focus); the mobile menu works the same way below 768 px.
+- [ ] Part lists open and close with mouse and keyboard (Enter/Space on the button, Escape closes and returns focus); the menu button works the same way below 1024 px.
 - [ ] Each page loads only the CSVs in the §6 table (check the browser's Network tab) and only its own chart files.
 - [ ] The age group chosen on Home is marked on big-picture (chart B), story-older (chart C), story-vehicles (chart D's select) and story-young (chart F); it survives a reload and page changes, also with storage blocked (`?age=`); "Clear" removes it everywhere.
 

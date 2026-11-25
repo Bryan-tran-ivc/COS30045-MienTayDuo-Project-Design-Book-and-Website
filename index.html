@@ -17,29 +17,43 @@
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/visualisation.css" />
   </head>
-  <body id="top">
+  <body id="top" data-page="home">
     <!-- A11Y: skip link is the first focusable element -->
     <a class="skip-link" href="#main">Skip to content</a>
 
+    <!-- ===== SHARED HEADER (master copy: _template.html) ===== -->
     <header class="site-header">
       <div class="container header-inner">
-        <a class="brand" href="#top">Few cases, long stays</a>
-        <!-- A11Y: menu button controls the nav list on small screens -->
-        <button
-          class="menu-button"
-          type="button"
-          aria-expanded="false"
-          aria-controls="site-nav-list"
-        >
+        <a class="brand" href="index.html">Few cases, long stays</a>
+        <!-- A11Y: below 1024 px the menu button shows and hides the whole navigation -->
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav-list">
           Menu
         </button>
-        <nav class="site-nav" aria-label="Story sections">
-          <ul id="site-nav-list">
-            <li><a href="#big-picture">Big picture</a></li>
-            <li><a href="#part-a">Longer stays</a></li>
-            <li><a href="#part-b">More cases</a></li>
-            <li><a href="#what-can-be-done">What can be done</a></li>
-            <li><a href="#about">About the data</a></li>
+        <nav class="site-nav" aria-label="Main">
+          <ul id="site-nav-list" class="nav-list">
+            <li><a href="index.html" aria-current="page">Home</a></li>
+            <li><a href="big-picture.html">Big picture</a></li>
+            <li class="nav-group">
+              <!-- A11Y: disclosure button; aria-expanded says whether its list of stories is open -->
+              <button class="nav-group-button" type="button" aria-expanded="false" aria-controls="nav-part-a">
+                A · Longer stays
+              </button>
+              <ul id="nav-part-a" class="nav-sub" aria-label="Part A: why do stays last so long?">
+                <li><a href="story-older.html">Story 1 · Older people</a></li>
+                <li><a href="story-vehicles.html">Story 2 · Heavier vehicles</a></li>
+              </ul>
+            </li>
+            <li class="nav-group">
+              <button class="nav-group-button" type="button" aria-expanded="false" aria-controls="nav-part-b">
+                B · More cases
+              </button>
+              <ul id="nav-part-b" class="nav-sub" aria-label="Part B: why are there so many cases?">
+                <li><a href="story-winter.html">Story 3 · Winter</a></li>
+                <li><a href="story-young.html">Story 4 · Children and young people</a></li>
+              </ul>
+            </li>
+            <li><a href="what-can-be-done.html">What can be done</a></li>
+            <li><a href="about.html">About the data</a></li>
           </ul>
         </nav>
       </div>
@@ -507,11 +521,16 @@
       </section>
     </main>
 
+    <!-- ===== SHARED FOOTER (master copy: _template.html) ===== -->
     <footer class="site-footer">
       <div class="container">
         <p>
           COS30045 Data Visualisation · Swinburne University of Technology Vietnam · Team
           MienTayDuo: Tran Quang Huy (106212636) and Chung Hien Thong (106212681) · 2026
+        </p>
+        <p>
+          Data: BITRE (2023) hospitalised injury, 2011–2021; ABS (2026) population, June 2021.
+          Sources and limits: <a href="about.html">About the data</a>.
         </p>
       </div>
     </footer>

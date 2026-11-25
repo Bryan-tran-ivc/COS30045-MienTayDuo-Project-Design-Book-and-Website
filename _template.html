@@ -1,0 +1,121 @@
+<!doctype html>
+<!--
+  File: _template.html
+  Purpose: Master copy of the shared page shell (SPEC.md §3.0): skip link, header with the main navigation, the hooks
+           for the breadcrumb and story pager, footer, shared tooltip and the script order. There is no build step,
+           so every page holds a copy of this header and footer. Change them here first, then paste the change into
+           all eight pages in the same pull request. This file is not linked from the site.
+  Project: COS30045 Data Visualisation · Team MienTayDuo · Tran Quang Huy (106212636), Chung Hien Thong (106212681)
+
+  When making a new page from this template, change only the parts marked "PAGE:":
+    1. <title> and the meta description.
+    2. data-page on <body> (home, big-picture, story-older, story-vehicles, story-winter, story-young,
+       what-can-be-done, about).
+    3. In the nav, put aria-current="page" on this page's link (and only there). On a story page, also add the
+       class "is-current" to the Part A or Part B button that holds it.
+    4. The content of <main>. Keep the breadcrumb and pager hooks only on pages in the story order (big picture,
+       the four stories, what can be done).
+    5. This page's chart scripts, between helpers.js and interactions.js.
+-->
+<html lang="en-AU">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- PAGE: title and description -->
+    <title>Page name · Few cases, long stays</title>
+    <meta name="description" content="One sentence about this page." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23eb6834'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/visualisation.css" />
+  </head>
+  <!-- PAGE: data-page -->
+  <body data-page="template">
+    <!-- A11Y: skip link is the first focusable element -->
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- ===== SHARED HEADER (copy from here) ===== -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="index.html">Few cases, long stays</a>
+        <!-- A11Y: below 1024 px the menu button shows and hides the whole navigation -->
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav-list">
+          Menu
+        </button>
+        <!-- PAGE: aria-current="page" on this page's link; class "is-current" on its part button (story pages) -->
+        <nav class="site-nav" aria-label="Main">
+          <ul id="site-nav-list" class="nav-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="big-picture.html">Big picture</a></li>
+            <li class="nav-group">
+              <!-- A11Y: disclosure button; aria-expanded says whether its list of stories is open -->
+              <button class="nav-group-button" type="button" aria-expanded="false" aria-controls="nav-part-a">
+                A · Longer stays
+              </button>
+              <ul id="nav-part-a" class="nav-sub" aria-label="Part A: why do stays last so long?">
+                <li><a href="story-older.html">Story 1 · Older people</a></li>
+                <li><a href="story-vehicles.html">Story 2 · Heavier vehicles</a></li>
+              </ul>
+            </li>
+            <li class="nav-group">
+              <button class="nav-group-button" type="button" aria-expanded="false" aria-controls="nav-part-b">
+                B · More cases
+              </button>
+              <ul id="nav-part-b" class="nav-sub" aria-label="Part B: why are there so many cases?">
+                <li><a href="story-winter.html">Story 3 · Winter</a></li>
+                <li><a href="story-young.html">Story 4 · Children and young people</a></li>
+              </ul>
+            </li>
+            <li><a href="what-can-be-done.html">What can be done</a></li>
+            <li><a href="about.html">About the data</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <!-- ===== SHARED HEADER (copy to here) ===== -->
+
+    <main id="main">
+      <!-- Story-order pages only: filled by js/site-components.js (Huy, task 1.5) -->
+      <div class="breadcrumb" data-breadcrumb></div>
+
+      <!-- PAGE: content. One h1 per page; h2 per section; h3 inside a section (SPEC §3). -->
+      <section class="page-intro" aria-labelledby="page-title">
+        <div class="container">
+          <p class="eyebrow">Kicker, e.g. Part A · Story 1 · Older people</p>
+          <h1 id="page-title">Page title</h1>
+          <p class="section-intro">Intro text. Numbers come from data-stat spans, e.g. <span data-stat="beds_per_day">…</span>.</p>
+        </div>
+      </section>
+
+      <!-- Story-order pages only: filled by js/site-components.js (Huy, task 1.5) -->
+      <div class="story-pager" data-pager></div>
+    </main>
+
+    <!-- ===== SHARED FOOTER (copy from here) ===== -->
+    <footer class="site-footer">
+      <div class="container">
+        <p>
+          COS30045 Data Visualisation · Swinburne University of Technology Vietnam · Team
+          MienTayDuo: Tran Quang Huy (106212636) and Chung Hien Thong (106212681) · 2026
+        </p>
+        <p>
+          Data: BITRE (2023) hospitalised injury, 2011–2021; ABS (2026) population, June 2021.
+          Sources and limits: <a href="about.html">About the data</a>.
+        </p>
+      </div>
+    </footer>
+    <!-- ===== SHARED FOOTER (copy to here) ===== -->
+
+    <!-- A11Y: one shared tooltip, announced politely to screen readers (on every page: helpers.js expects it) -->
+    <div id="tooltip" class="tooltip" role="tooltip" aria-live="polite" hidden></div>
+
+    <!-- Scripts in the order used in the unit labs (SPEC §6): library, constants, helpers, this page's charts,
+         interactions, then data loading (runs last) -->
+    <script src="lib/d3.v7.min.js"></script>
+    <script src="js/shared-constants.js"></script>
+    <script src="js/helpers.js"></script>
+    <!-- js/site-components.js goes here once it exists (Huy, task 1.5) -->
+    <!-- PAGE: this page's chart files, e.g. <script src="js/chart-c-age-rates.js"></script> -->
+    <script src="js/interactions.js"></script>
+    <script src="js/load-data.js"></script>
+  </body>
+</html>

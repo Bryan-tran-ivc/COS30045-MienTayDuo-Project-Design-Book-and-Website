@@ -1,6 +1,6 @@
 /* File: css/base.css
- * Purpose: Design tokens, page layout, typography, header/navigation, sections, story layout, cards and controls
- *          (SPEC.md §3 and §5). Chart-specific styles are in css/visualisation.css.
+ * Purpose: Design tokens, page layout, typography, the shared header/navigation and footer, sections, story layout,
+ *          cards and controls (SPEC.md §3 and §5). Chart-specific styles are in css/visualisation.css.
  * Project: COS30045 · Team MienTayDuo · "Few cases, long stays"
  */
 
@@ -113,7 +113,7 @@ a {
   top: 8px;
 }
 
-/* ---------- Header and navigation ---------- */
+/* ---------- Header and navigation (SPEC §3.0.1; master copy in _template.html) ---------- */
 .site-header {
   position: sticky;
   top: 0;
@@ -133,28 +133,93 @@ a {
   color: var(--ink);
   text-decoration: none;
   font-size: 17px;
+  white-space: nowrap;
 }
-.site-nav ul {
+.nav-list {
   display: flex;
-  gap: 22px;
+  align-items: center;
+  gap: 20px;
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.site-nav a {
+/* Links and the two part buttons look the same */
+.nav-list a,
+.nav-group-button {
   color: var(--ink-2);
   text-decoration: none;
+  font: inherit;
   font-size: 15px;
+  line-height: 1.6;
+  white-space: nowrap;
   padding: 6px 0;
+  border: 0;
   border-bottom: 2.5px solid transparent;
+  background: none;
 }
-.site-nav a:hover {
+.nav-list a:hover,
+.nav-group-button:hover {
   color: var(--ink);
 }
-/* Scroll-spy: the section in view (set by interactions.js) */
-.site-nav a[aria-current="true"] {
+/* Current page: aria-current="page" is written into each page's copy of the header; on story pages the part
+   button that holds the page has the class is-current */
+.nav-list a[aria-current="page"],
+.nav-group-button.is-current {
   color: var(--ink);
   border-bottom-color: var(--orange);
+}
+.nav-group {
+  position: relative;
+}
+.nav-group-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+/* Chevron: points down when the list is closed, up when it is open */
+.nav-group-button::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.15s;
+}
+.nav-group-button[aria-expanded="true"]::after {
+  transform: translateY(2px) rotate(-135deg);
+}
+/* A11Y: a part's list of stories is shown only while its button says aria-expanded="true" */
+.nav-sub {
+  display: none;
+  position: absolute;
+  top: calc(100% + 12px);
+  left: -14px;
+  z-index: 55;
+  min-width: 270px;
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+.nav-group-button[aria-expanded="true"] + .nav-sub {
+  display: block;
+}
+.nav-sub a {
+  display: block;
+  padding: 8px 14px;
+  border-bottom: 0;
+}
+.nav-sub a:hover {
+  background: var(--surface-2);
+}
+.nav-sub a[aria-current="page"] {
+  background: var(--surface-2);
+  box-shadow: inset 3px 0 0 var(--orange);
 }
 .menu-button {
   display: none;
@@ -481,11 +546,82 @@ select {
   color: var(--ink-2);
   font-size: 14px;
 }
+.site-footer p {
+  margin: 0 0 6px;
+  max-width: 760px;
+}
+
+/* Hooks filled by js/site-components.js (Huy, task 1.5): aligned with the page content */
+.breadcrumb,
+.story-pager {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+.breadcrumb:empty,
+.story-pager:empty {
+  display: none;
+}
 
 /* ---------- Tablet ---------- */
 @media (max-width: 1023px) {
   .response-cards {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Navigation: the full row does not fit below 1024 px, so it moves behind the menu button (SPEC §3.0.1) */
+  .menu-button {
+    display: inline-block;
+  }
+  /* The nav leaves the flex row so the menu button sits at the right edge; its list drops down under the header */
+  .site-nav {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 0;
+  }
+  /* A11Y: the nav list is hidden until the menu button opens it */
+  .nav-list {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 60px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 8px var(--gutter) 16px;
+  }
+  .site-nav.is-open .nav-list {
+    display: flex;
+  }
+  .nav-list a,
+  .nav-group-button {
+    display: flex;
+    width: 100%;
+    padding: 10px 0;
+    text-align: left;
+  }
+  .nav-group-button {
+    justify-content: space-between;
+  }
+  /* Inside the menu a part's stories open inline, indented under their button */
+  .nav-sub {
+    position: static;
+    min-width: 0;
+    padding: 0 0 6px 14px;
+    border: 0;
+    border-left: 2px solid var(--grid);
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .nav-sub a {
+    padding: 8px 0 8px 12px;
   }
 }
 
@@ -518,36 +654,5 @@ select {
   .response-cards,
   .about-grid {
     grid-template-columns: 1fr;
-  }
-  .menu-button {
-    display: inline-block;
-  }
-  /* The nav leaves the flex row so the menu button sits at the right edge; its list drops down under the header */
-  .site-nav {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: 0;
-  }
-  /* A11Y: the nav list is hidden until the menu button opens it */
-  .site-nav ul {
-    display: none;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 60px;
-    flex-direction: column;
-    gap: 0;
-    background: var(--card);
-    border-bottom: 1px solid var(--border);
-    padding: 8px var(--gutter) 16px;
-  }
-  .site-nav.is-open ul {
-    display: flex;
-  }
-  .site-nav a {
-    display: block;
-    padding: 10px 0;
   }
 }
