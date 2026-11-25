@@ -54,6 +54,7 @@ const initNavigation = () => {
   const setMenu = (open) => {
     nav.classList.toggle("is-open", open);
     menuButton.setAttribute("aria-expanded", String(open));
+    if (!open) closeGroups(); // a part list never stays "expanded" inside a closed menu
   };
   menuButton.addEventListener("click", () => setMenu(!nav.classList.contains("is-open")));
   nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setMenu(false)));
