@@ -1,0 +1,147 @@
+<!doctype html>
+<!--
+  File: story-vehicles.html
+  Purpose: Page 4, Part A · Story 2 (SPEC.md §3.4): the heavier the vehicle that hits a pedestrian, the longer the
+           hospital stay, with chart D and the "What can be done" response. Header and footer are copies of
+           _template.html.
+  Project: COS30045 Data Visualisation · Team MienTayDuo · Tran Quang Huy (106212636), Chung Hien Thong (106212681)
+-->
+<html lang="en-AU">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Story 2 · Heavier vehicles · Few cases, long stays</title>
+    <meta
+      name="description"
+      content="Pedestrians hit by a truck, bus or train stay in hospital far longer than those hit by a car, ute or van (Australia, 2016–2021)."
+    />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23eb6834'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/visualisation.css" />
+  </head>
+  <body data-page="story-vehicles">
+    <!-- A11Y: skip link is the first focusable element -->
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- ===== SHARED HEADER (master copy: _template.html) ===== -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="index.html">Few cases, long stays</a>
+        <!-- A11Y: below 1024 px the menu button shows and hides the whole navigation -->
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav-list">
+          Menu
+        </button>
+        <nav class="site-nav" aria-label="Main">
+          <ul id="site-nav-list" class="nav-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="big-picture.html">Big picture</a></li>
+            <li class="nav-group">
+              <!-- A11Y: disclosure button; aria-expanded says whether its list of stories is open -->
+              <button class="nav-group-button is-current" type="button" aria-expanded="false" aria-controls="nav-part-a">
+                A · Longer stays
+              </button>
+              <ul id="nav-part-a" class="nav-sub" aria-label="Part A: why do stays last so long?">
+                <li><a href="story-older.html">Story 1 · Older people</a></li>
+                <li><a href="story-vehicles.html" aria-current="page">Story 2 · Heavier vehicles</a></li>
+              </ul>
+            </li>
+            <li class="nav-group">
+              <button class="nav-group-button" type="button" aria-expanded="false" aria-controls="nav-part-b">
+                B · More cases
+              </button>
+              <ul id="nav-part-b" class="nav-sub" aria-label="Part B: why are there so many cases?">
+                <li><a href="story-winter.html">Story 3 · Winter</a></li>
+                <li><a href="story-young.html">Story 4 · Children and young people</a></li>
+              </ul>
+            </li>
+            <li><a href="what-can-be-done.html">What can be done</a></li>
+            <li><a href="about.html">About the data</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <div class="breadcrumb" data-breadcrumb></div>
+
+      <article class="section story-page" aria-labelledby="page-title">
+        <div class="container story story--reverse">
+          <div class="story-text">
+            <p class="story-kicker">Part A · Story 2 · Heavier vehicles</p>
+            <h1 id="page-title">The heavier the vehicle, the longer the stay</h1>
+            <p>
+              Between 2016 and 2021, a pedestrian hit by a car, ute or van stayed
+              <span data-stat="bdpc_car">…</span> days per admission. One hit by a truck or bus
+              stayed <span data-stat="bdpc_truck">…</span> days, and one hit by a train
+              <span data-stat="bdpc_train">…</span>. Trucks and buses caused only
+              <span data-stat="truck_case_share">…</span> of pedestrian admissions but
+              <span data-stat="truck_bed_share">…</span> of their bed days. Choose an age group: the
+              pattern holds in each one.
+            </p>
+            <aside class="response" aria-labelledby="response-title">
+              <h2 id="response-title">What can be done</h2>
+              <p>
+                Reduce crash energy. For trucks on city streets, that means blind-spot systems, side
+                underrun protection and automatic emergency braking, which Australia's Safer Freight
+                Vehicles package encourages (DITRDCA, 2023). For cars, which cause
+                <span data-stat="car_case_share">…</span> of cases, it means lower speeds where people
+                walk: the risk of death rises steeply with impact speed (Hussain et al., 2019).
+              </p>
+            </aside>
+          </div>
+
+          <figure class="chart-figure story-figure" aria-labelledby="chart-d-title">
+            <h2 id="chart-d-title" class="chart-title">
+              Trucks, buses and trains mean the longest stays
+            </h2>
+            <p class="chart-subtitle" id="chart-d-subtitle">
+              Average bed days per pedestrian admission by the vehicle that hit them, 2016–2021 · All
+              ages
+            </p>
+            <div class="chart-controls">
+              <!-- A11Y: native select with a visible label -->
+              <label class="select-label" for="select-d">Age group</label>
+              <select id="select-d"></select>
+            </div>
+            <div class="chart" id="chart-d"></div>
+            <p class="chart-note">
+              Vehicles are ordered from lightest to heaviest. Other and unspecified vehicles are not
+              shown. Groups with fewer than 20 admissions are not shown.
+            </p>
+            <details class="data-table">
+              <summary>Show data table</summary>
+              <div class="table-wrap" id="table-d"></div>
+            </details>
+          </figure>
+        </div>
+      </article>
+
+      <div class="story-pager" data-pager></div>
+    </main>
+
+    <!-- ===== SHARED FOOTER (master copy: _template.html) ===== -->
+    <footer class="site-footer">
+      <div class="container">
+        <p>
+          COS30045 Data Visualisation · Swinburne University of Technology Vietnam · Team
+          MienTayDuo: Tran Quang Huy (106212636) and Chung Hien Thong (106212681) · 2026
+        </p>
+        <p>
+          Data: BITRE (2023) hospitalised injury, 2011–2021; ABS (2026) population, June 2021.
+          Sources and limits: <a href="about.html">About the data</a>.
+        </p>
+      </div>
+    </footer>
+
+    <!-- A11Y: one shared tooltip, announced politely to screen readers -->
+    <div id="tooltip" class="tooltip" role="tooltip" aria-live="polite" hidden></div>
+
+    <!-- Scripts (SPEC §6): library, constants, helpers, this page's chart, interactions, then data loading -->
+    <script src="lib/d3.v7.min.js"></script>
+    <script src="js/shared-constants.js"></script>
+    <script src="js/helpers.js"></script>
+    <script src="js/chart-d-vehicle.js"></script>
+    <script src="js/interactions.js"></script>
+    <script src="js/load-data.js"></script>
+  </body>
+</html>

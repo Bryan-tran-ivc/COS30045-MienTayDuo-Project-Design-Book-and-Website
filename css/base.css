@@ -269,10 +269,27 @@ a {
   max-width: 680px;
   color: var(--ink-2);
 }
-.scroll-cue {
+/* Call to action: the one strong link on Home */
+.cta {
   display: inline-block;
   margin-top: 8px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
   font-weight: 600;
+  text-decoration: none;
+}
+.cta:hover {
+  background: var(--ink-2);
+}
+
+/* ---------- Page openings (SPEC §3) ---------- */
+.page-intro {
+  padding-top: 48px;
+}
+.page-intro .section-intro {
+  margin-bottom: 28px;
 }
 
 /* ---------- Sections ---------- */
@@ -374,6 +391,86 @@ a {
 .pill:hover {
   background: var(--surface-2);
 }
+/* The formula card at the end of the big picture hands the reader on to the two parts */
+.formula-card--next {
+  margin-top: 36px;
+}
+.formula-card p:not(.formula) {
+  margin: 0 0 14px;
+  color: var(--ink-2);
+}
+
+/* ---------- Story map on Home: two parts, two story cards each ---------- */
+.story-map {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 28px;
+}
+.story-map .part-band {
+  font-size: 19px;
+  margin-bottom: 14px;
+}
+.story-cards {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.story-card {
+  position: relative; /* the title link's ::after makes the whole card clickable */
+  background: var(--card);
+  border: 1px solid var(--grid);
+  border-left: 4px solid;
+  border-radius: var(--radius);
+  padding: 14px 18px;
+}
+.story-card--orange {
+  border-left-color: var(--orange);
+}
+.story-card--blue {
+  border-left-color: var(--blue);
+}
+.story-card:hover {
+  border-color: var(--border);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+.story-card--orange:hover {
+  border-left-color: var(--orange);
+}
+.story-card--blue:hover {
+  border-left-color: var(--blue);
+}
+.story-card-kicker {
+  color: var(--ink-2);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 2px;
+}
+.story-card h4 {
+  font-size: 18px;
+  margin: 0 0 6px;
+}
+.story-card h4 a {
+  color: var(--ink);
+  text-decoration: none;
+}
+.story-card h4 a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+}
+.story-card:hover h4 a {
+  text-decoration: underline;
+}
+.story-card p:last-child {
+  margin: 0;
+  color: var(--ink-2);
+}
 
 /* ---------- Story layout ---------- */
 .story {
@@ -397,8 +494,17 @@ a {
   padding: 16px 18px;
   margin-top: 16px;
 }
+.response h2,
 .response h4 {
+  font-size: 17px;
   margin-bottom: 6px;
+}
+/* Story pages: one story per page, so the title is the page's h1 (smaller than Home's, it sits in the text column) */
+.story-page {
+  padding-top: 40px;
+}
+.story h1 {
+  font-size: 32px;
 }
 .response p {
   margin: 0;
@@ -652,7 +758,15 @@ select {
   }
   .kpi-row,
   .response-cards,
-  .about-grid {
+  .about-grid,
+  .story-map {
     grid-template-columns: 1fr;
+  }
+  .page-intro,
+  .story-page {
+    padding-top: 28px;
+  }
+  .story h1 {
+    font-size: 26px;
   }
 }

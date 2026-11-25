@@ -1,0 +1,141 @@
+<!doctype html>
+<!--
+  File: story-older.html
+  Purpose: Page 3, Part A · Story 1 (SPEC.md §3.3): older pedestrians have the highest bed-day rate per 100,000
+           people, with chart C and the "What can be done" response. Header and footer are copies of _template.html.
+  Project: COS30045 Data Visualisation · Team MienTayDuo · Tran Quang Huy (106212636), Chung Hien Thong (106212681)
+-->
+<html lang="en-AU">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Story 1 · Older pedestrians · Few cases, long stays</title>
+    <meta
+      name="description"
+      content="Per 100,000 people, Australians aged 75 and over had the most pedestrian hospital bed days in 2021, and their stays were among the longest."
+    />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23eb6834'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/visualisation.css" />
+  </head>
+  <body data-page="story-older">
+    <!-- A11Y: skip link is the first focusable element -->
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- ===== SHARED HEADER (master copy: _template.html) ===== -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="index.html">Few cases, long stays</a>
+        <!-- A11Y: below 1024 px the menu button shows and hides the whole navigation -->
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav-list">
+          Menu
+        </button>
+        <nav class="site-nav" aria-label="Main">
+          <ul id="site-nav-list" class="nav-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="big-picture.html">Big picture</a></li>
+            <li class="nav-group">
+              <!-- A11Y: disclosure button; aria-expanded says whether its list of stories is open -->
+              <button class="nav-group-button is-current" type="button" aria-expanded="false" aria-controls="nav-part-a">
+                A · Longer stays
+              </button>
+              <ul id="nav-part-a" class="nav-sub" aria-label="Part A: why do stays last so long?">
+                <li><a href="story-older.html" aria-current="page">Story 1 · Older people</a></li>
+                <li><a href="story-vehicles.html">Story 2 · Heavier vehicles</a></li>
+              </ul>
+            </li>
+            <li class="nav-group">
+              <button class="nav-group-button" type="button" aria-expanded="false" aria-controls="nav-part-b">
+                B · More cases
+              </button>
+              <ul id="nav-part-b" class="nav-sub" aria-label="Part B: why are there so many cases?">
+                <li><a href="story-winter.html">Story 3 · Winter</a></li>
+                <li><a href="story-young.html">Story 4 · Children and young people</a></li>
+              </ul>
+            </li>
+            <li><a href="what-can-be-done.html">What can be done</a></li>
+            <li><a href="about.html">About the data</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <div class="breadcrumb" data-breadcrumb></div>
+
+      <article class="section story-page" aria-labelledby="page-title">
+        <div class="container story">
+          <div class="story-text">
+            <p class="story-kicker">Part A · Story 1 · Older people</p>
+            <h1 id="page-title">Older pedestrians carry the heaviest burden</h1>
+            <p>
+              Counts alone would hide this, because age groups differ in size. Per 100,000 people,
+              those aged 75 and over had the most pedestrian bed days in 2021:
+              <span data-stat="bd_rate_75">…</span> against
+              <span data-stat="bd_rate_all">…</span> for all ages,
+              <span data-stat="bd_rate_ratio_75">…</span> times as many. Each of their admissions
+              lasted <span data-stat="bdpc_75">…</span> days. Within every adult age group,
+              pedestrians also stayed 1.7 to 2.7 times longer than car drivers of the same age, so
+              this is not only an age effect.
+            </p>
+            <aside class="response" aria-labelledby="response-title">
+              <h2 id="response-title">What can be done</h2>
+              <p>
+                Give slower walkers time to cross. Older adults walk about 0.77 m per second on
+                average, well below the 1.2 m per second that most crossings assume (Western et al.,
+                2025). Longer crossing times, pedestrian detection at signals, and awareness
+                messages aimed at drivers and older people all target this group.
+              </p>
+            </aside>
+          </div>
+
+          <figure class="chart-figure story-figure" aria-labelledby="chart-c-title">
+            <h2 id="chart-c-title" class="chart-title">People aged 75+ carry the heaviest burden</h2>
+            <p class="chart-subtitle" id="chart-c-subtitle">
+              Pedestrian bed days per 100,000 people, 2021
+            </p>
+            <div class="chart-controls">
+              <!-- A11Y: segmented toggle uses real buttons with aria-pressed -->
+              <div class="segmented" role="group" aria-label="Measure" id="toggle-c">
+                <button type="button" data-value="bedDays" aria-pressed="true">Bed days</button>
+                <button type="button" data-value="admissions" aria-pressed="false">Admissions</button>
+              </div>
+            </div>
+            <div class="chart" id="chart-c"></div>
+            <details class="data-table">
+              <summary>Show data table</summary>
+              <div class="table-wrap" id="table-c"></div>
+            </details>
+          </figure>
+        </div>
+      </article>
+
+      <div class="story-pager" data-pager></div>
+    </main>
+
+    <!-- ===== SHARED FOOTER (master copy: _template.html) ===== -->
+    <footer class="site-footer">
+      <div class="container">
+        <p>
+          COS30045 Data Visualisation · Swinburne University of Technology Vietnam · Team
+          MienTayDuo: Tran Quang Huy (106212636) and Chung Hien Thong (106212681) · 2026
+        </p>
+        <p>
+          Data: BITRE (2023) hospitalised injury, 2011–2021; ABS (2026) population, June 2021.
+          Sources and limits: <a href="about.html">About the data</a>.
+        </p>
+      </div>
+    </footer>
+
+    <!-- A11Y: one shared tooltip, announced politely to screen readers -->
+    <div id="tooltip" class="tooltip" role="tooltip" aria-live="polite" hidden></div>
+
+    <!-- Scripts (SPEC §6): library, constants, helpers, this page's chart, interactions, then data loading -->
+    <script src="lib/d3.v7.min.js"></script>
+    <script src="js/shared-constants.js"></script>
+    <script src="js/helpers.js"></script>
+    <script src="js/chart-c-age-rates.js"></script>
+    <script src="js/interactions.js"></script>
+    <script src="js/load-data.js"></script>
+  </body>
+</html>

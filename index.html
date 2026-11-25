@@ -1,7 +1,9 @@
 <!doctype html>
 <!--
   File: index.html
-  Purpose: Page structure and story text for "Few cases, long stays" (SPEC.md §3). Charts are drawn by D3 into the empty .chart containers.
+  Purpose: Page 1, Home (SPEC.md §3.1): the headline number (hospital beds filled by injured pedestrians on an average
+           day), three key figures for 2021 and a story map that splits bed days into cases × days per case, with one
+           card per story. Header and footer are copies of _template.html.
   Project: COS30045 Data Visualisation · Team MienTayDuo · Tran Quang Huy (106212636), Chung Hien Thong (106212681)
 -->
 <html lang="en-AU">
@@ -17,7 +19,7 @@
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/visualisation.css" />
   </head>
-  <body id="top" data-page="home">
+  <body data-page="home">
     <!-- A11Y: skip link is the first focusable element -->
     <a class="skip-link" href="#main">Skip to content</a>
 
@@ -76,26 +78,15 @@
             crashes. But they stay much longer than most, and that is easy to miss if we only
             count cases.
           </p>
-          <a class="scroll-cue" href="#big-picture">Scroll to read the story ↓</a>
+          <a class="cta" href="big-picture.html">Start with the big picture →</a>
         </div>
       </section>
 
-      <!-- ================= BIG PICTURE ================= -->
-      <section id="big-picture" class="section" aria-labelledby="big-picture-title">
+      <!-- ================= KEY FIGURES ================= -->
+      <section class="section" aria-labelledby="kpi-title">
         <div class="container">
-          <h2 id="big-picture-title">The big picture</h2>
-          <p class="section-intro">
-            In 2021, pedestrians were <span data-stat="ped_adm_share_2021">…</span> of
-            road-injury admissions but <span data-stat="ped_bed_share_2021">…</span> of the days
-            those patients spent in hospital. A pedestrian stayed
-            <span data-stat="ped_bdpc_2021">…</span> days on average, against
-            <span data-stat="all_bdpc_2021">…</span> days for all road injuries. The gap is not
-            new: in every year from 2011 to 2021, the pedestrian share of bed days was
-            <span data-stat="gap_min">…</span> to <span data-stat="gap_max">…</span> times their
-            share of admissions.
-          </p>
-
-          <ul class="kpi-row" aria-label="Key figures, 2021">
+          <h2 id="kpi-title">2021 in three numbers</h2>
+          <ul class="kpi-row">
             <li class="kpi">
               <span class="kpi-value kpi-value--blue" data-stat="ped_adm_share_2021">…</span>
               <span class="kpi-label">of road-injury admissions were pedestrians</span>
@@ -112,410 +103,78 @@
               <span class="kpi-label">days per case, pedestrians vs all road injuries</span>
             </li>
           </ul>
-
-          <figure class="chart-figure" aria-labelledby="chart-a-title">
-            <h3 id="chart-a-title" class="chart-title">
-              Pedestrians use twice their share of hospital beds
-            </h3>
-            <p class="chart-subtitle">
-              Pedestrian share of all road-injury bed days and admissions, Australia, 2011–2021
-            </p>
-            <div class="chart-controls">
-              <!-- A11Y: native checkbox with a visible label -->
-              <label class="checkbox">
-                <input type="checkbox" id="toggle-deaths" />
-                Remove bed days of patients who died (2011–2020)
-              </label>
-            </div>
-            <ul class="legend" aria-label="Legend">
-              <li><span class="swatch swatch--orange"></span>Share of bed days</li>
-              <li><span class="swatch swatch--blue"></span>Share of admissions</li>
-              <li class="legend-deaths" hidden>
-                <span class="swatch swatch--orange-dashed"></span>Bed days without patients who
-                died
-              </li>
-            </ul>
-            <div class="chart" id="chart-a"></div>
-            <p class="chart-note" id="note-a-deaths" hidden>
-              2021 is not shown for this line: the death fields are blank that year.
-            </p>
-            <p class="chart-note">
-              Dashed grey lines mark changes in how cases or bed days were counted; hover or
-              focus a line to read about it.
-            </p>
-            <details class="data-table">
-              <summary>Show data table</summary>
-              <div class="table-wrap" id="table-a"></div>
-            </details>
-          </figure>
         </div>
       </section>
 
-      <!-- ================= BRIDGE ================= -->
-      <section id="bridge" class="section section--tint" aria-labelledby="bridge-title">
+      <!-- ================= STORY MAP ================= -->
+      <section class="section section--tint" aria-labelledby="map-title">
         <div class="container">
-          <h2 id="bridge-title">
+          <h2 id="map-title">
             Where do the <span data-stat="beds_per_day">…</span> beds come from?
           </h2>
           <div class="formula-card">
             <p class="formula">Bed days = number of cases × days per case</p>
-            <div class="formula-links">
-              <a class="pill pill--orange" href="#part-a">A · Longer stays →</a>
-              <a class="pill pill--blue" href="#part-b">B · More cases →</a>
-            </div>
-          </div>
-          <p class="section-intro">
-            Young people make most of the cases, while older people fill most of the beds.
-            People under 40 were <span data-stat="under40_case_share">…</span> of pedestrian
-            admissions in 2021 but only <span data-stat="under40_bed_share">…</span> of the bed
-            days. People aged 65 and over were <span data-stat="over65_case_share">…</span> of
-            admissions and <span data-stat="over65_bed_share">…</span> of bed days.
-          </p>
-
-          <figure class="chart-figure" aria-labelledby="chart-b-title">
-            <h3 id="chart-b-title" class="chart-title">
-              Young people make the cases; older people fill the beds
-            </h3>
-            <p class="chart-subtitle">
-              Share of pedestrian admissions and bed days by age group, 2021
-            </p>
-            <ul class="legend" aria-label="Legend">
-              <li><span class="swatch swatch--blue"></span>Share of pedestrian admissions</li>
-              <li><span class="swatch swatch--orange"></span>Share of pedestrian bed days</li>
-            </ul>
-            <div class="chart" id="chart-b"></div>
-            <details class="data-table">
-              <summary>Show data table</summary>
-              <div class="table-wrap" id="table-b"></div>
-            </details>
-          </figure>
-        </div>
-      </section>
-
-      <!-- ================= PART A ================= -->
-      <section id="part-a" class="section" aria-labelledby="part-a-title">
-        <div class="container">
-          <h2 id="part-a-title" class="part-band part-band--orange">
-            Part A · Why do stays last so long?
-          </h2>
-
-          <!-- Story 1 -->
-          <article id="story-older" class="story" aria-labelledby="story-older-title">
-            <div class="story-text">
-              <p class="story-kicker">Story 1 · Older people</p>
-              <h3 id="story-older-title">Older pedestrians carry the heaviest burden</h3>
-              <p>
-                Counts alone would hide this, because age groups differ in size. Per 100,000
-                people, those aged 75 and over had the most pedestrian bed days in 2021:
-                <span data-stat="bd_rate_75">…</span> against
-                <span data-stat="bd_rate_all">…</span> for all ages,
-                <span data-stat="bd_rate_ratio_75">…</span> times as many. Each of their
-                admissions lasted <span data-stat="bdpc_75">…</span> days. Within every adult age
-                group, pedestrians also stayed 1.7 to 2.7 times longer than car drivers of the
-                same age, so this is not only an age effect.
-              </p>
-              <aside class="response" aria-label="What can be done: older people">
-                <h4>What can be done</h4>
-                <p>
-                  Give slower walkers time to cross. Older adults walk about 0.77 m per second on
-                  average, well below the 1.2 m per second that most crossings assume (Western et
-                  al., 2025). Longer crossing times, pedestrian detection at signals, and
-                  awareness messages aimed at drivers and older people all target this group.
-                </p>
-              </aside>
-            </div>
-            <figure class="chart-figure story-figure" aria-labelledby="chart-c-title">
-              <h4 id="chart-c-title" class="chart-title">People aged 75+ carry the heaviest burden</h4>
-              <p class="chart-subtitle" id="chart-c-subtitle">
-                Pedestrian bed days per 100,000 people, 2021
-              </p>
-              <div class="chart-controls">
-                <!-- A11Y: segmented toggle uses real buttons with aria-pressed -->
-                <div class="segmented" role="group" aria-label="Measure" id="toggle-c">
-                  <button type="button" data-value="bedDays" aria-pressed="true">Bed days</button>
-                  <button type="button" data-value="admissions" aria-pressed="false">
-                    Admissions
-                  </button>
-                </div>
-              </div>
-              <div class="chart" id="chart-c"></div>
-              <details class="data-table">
-                <summary>Show data table</summary>
-                <div class="table-wrap" id="table-c"></div>
-              </details>
-            </figure>
-          </article>
-
-          <!-- Story 2 -->
-          <article
-            id="story-vehicles"
-            class="story story--reverse"
-            aria-labelledby="story-vehicles-title"
-          >
-            <div class="story-text">
-              <p class="story-kicker">Story 2 · Heavier vehicles</p>
-              <h3 id="story-vehicles-title">The heavier the vehicle, the longer the stay</h3>
-              <p>
-                Between 2016 and 2021, a pedestrian hit by a car, ute or van stayed
-                <span data-stat="bdpc_car">…</span> days per admission. One hit by a truck or bus
-                stayed <span data-stat="bdpc_truck">…</span> days, and one hit by a train
-                <span data-stat="bdpc_train">…</span>. Trucks and buses caused only
-                <span data-stat="truck_case_share">…</span> of pedestrian admissions but
-                <span data-stat="truck_bed_share">…</span> of their bed days. Choose an age group:
-                the pattern holds in each one.
-              </p>
-              <aside class="response" aria-label="What can be done: heavier vehicles">
-                <h4>What can be done</h4>
-                <p>
-                  Reduce crash energy. For trucks on city streets, that means blind-spot systems,
-                  side underrun protection and automatic emergency braking, which Australia's
-                  Safer Freight Vehicles package encourages (DITRDCA, 2023). For cars, which cause
-                  <span data-stat="car_case_share">…</span> of cases, it means lower speeds where
-                  people walk: the risk of death rises steeply with impact speed (Hussain et al.,
-                  2019).
-                </p>
-              </aside>
-            </div>
-            <figure class="chart-figure story-figure" aria-labelledby="chart-d-title">
-              <h4 id="chart-d-title" class="chart-title">
-                Trucks, buses and trains mean the longest stays
-              </h4>
-              <p class="chart-subtitle" id="chart-d-subtitle">
-                Average bed days per pedestrian admission by the vehicle that hit them, 2016–2021 ·
-                All ages
-              </p>
-              <div class="chart-controls">
-                <!-- A11Y: native select with a visible label -->
-                <label class="select-label" for="select-d">Age group</label>
-                <select id="select-d"></select>
-              </div>
-              <div class="chart" id="chart-d"></div>
-              <p class="chart-note">
-                Vehicles are ordered from lightest to heaviest. Other and unspecified vehicles are
-                not shown. Groups with fewer than 20 admissions are not shown.
-              </p>
-              <details class="data-table">
-                <summary>Show data table</summary>
-                <div class="table-wrap" id="table-d"></div>
-              </details>
-            </figure>
-          </article>
-        </div>
-      </section>
-
-      <!-- ================= PART B ================= -->
-      <section id="part-b" class="section" aria-labelledby="part-b-title">
-        <div class="container">
-          <h2 id="part-b-title" class="part-band part-band--blue">
-            Part B · Why are there so many cases?
-          </h2>
-
-          <!-- Story 3 -->
-          <article id="story-winter" class="story" aria-labelledby="story-winter-title">
-            <div class="story-text">
-              <p class="story-kicker">Story 3 · Winter</p>
-              <h3 id="story-winter-title">Pedestrian admissions rise every winter</h3>
-              <p>
-                Averaged over 2011–2019, pedestrian admissions in winter were
-                <span data-stat="winter_up">…</span> above an average season and summer admissions
-                <span data-stat="summer_down">…</span> below, while road injuries overall were
-                slightly below average in winter. Pedestrians' share of road-injury admissions
-                rose from <span data-stat="share_summer">…</span> in summer to
-                <span data-stat="share_winter">…</span> in winter, and winter was higher than
-                summer in all <span data-stat="n_years">…</span> years from 2011 to 2021. Winter
-                brings dark evenings, but also holidays and weather, so this is a pattern, not
-                proof of a cause.
-              </p>
-              <aside class="response" aria-label="What can be done: winter">
-                <h4>What can be done</h4>
-                <p>
-                  Help drivers see people on foot. Street lighting can prevent road injuries,
-                  though the studies are of mixed quality (Beyer &amp; Ker, 2009). Lighting at
-                  crossings and campaigns from autumn into winter, aimed at drivers and
-                  pedestrians, match the season when cases rise (RAA, 2025).
-                </p>
-              </aside>
-            </div>
-            <figure class="chart-figure story-figure" aria-labelledby="chart-e-title">
-              <h4 id="chart-e-title" class="chart-title">Winter is the peak season for pedestrian admissions</h4>
-              <p class="chart-subtitle" id="chart-e-subtitle">
-                Admissions index, 100 = average season, 2011–2019
-              </p>
-              <div class="chart-controls">
-                <div class="segmented" role="group" aria-label="View" id="toggle-e">
-                  <button type="button" data-value="average" aria-pressed="true">Average</button>
-                  <button type="button" data-value="year" aria-pressed="false">Year by year</button>
-                </div>
-              </div>
-              <ul class="legend" id="legend-e" aria-label="Legend"></ul>
-              <div class="chart" id="chart-e"></div>
-              <details class="data-table">
-                <summary>Show data table</summary>
-                <div class="table-wrap" id="table-e"></div>
-              </details>
-            </figure>
-          </article>
-
-          <!-- Story 4 -->
-          <article
-            id="story-young"
-            class="story story--reverse"
-            aria-labelledby="story-young-title"
-          >
-            <div class="story-text">
-              <p class="story-kicker">Story 4 · Children and young people</p>
-              <h3 id="story-young-title">
-                For young children, one road injury in six happens on foot
-              </h3>
-              <p>
-                People under 40 make up <span data-stat="under40_case_share">…</span> of
-                pedestrian admissions. For children aged 0–7,
-                <span data-stat="share_0_7">…</span> of all their road-injury admissions were
-                pedestrians, three times the all-ages share of
-                <span data-stat="share_all">…</span>. Their stays are short, so this story is about
-                the number of cases, not bed days.
-              </p>
-              <aside class="response" aria-label="What can be done: children and young people">
-                <h4>What can be done</h4>
-                <p>
-                  Aim awareness at the right people. Texting while walking is linked to less
-                  looking before crossing (Simmons et al., 2020), so messages for young adults can
-                  focus on phones at crossings; for young children the audience is their parents.
-                  Campaigns work best alongside other measures: mass media alone have shown little
-                  effect on crashes (Phillips et al., 2011).
-                </p>
-              </aside>
-            </div>
-            <figure class="chart-figure story-figure" aria-labelledby="chart-f-title">
-              <h4 id="chart-f-title" class="chart-title">
-                Walking is a large share of road injuries for young children
-              </h4>
-              <p class="chart-subtitle">
-                Pedestrians as a share of each age group's road-injury admissions, 2021
-              </p>
-              <div class="chart" id="chart-f"></div>
-              <details class="data-table">
-                <summary>Show data table</summary>
-                <div class="table-wrap" id="table-f"></div>
-              </details>
-            </figure>
-          </article>
-        </div>
-      </section>
-
-      <!-- ================= WHAT CAN BE DONE ================= -->
-      <section
-        id="what-can-be-done"
-        class="section section--tint"
-        aria-labelledby="what-can-be-done-title"
-      >
-        <div class="container">
-          <h2 id="what-can-be-done-title">Count bed days, not just cases</h2>
-          <p class="section-intro">
-            Ranking road users by admissions alone under-ranks pedestrians. A 30% cut in
-            pedestrian bed days, in line with the national target for serious injuries
-            (Australian Government, 2021), would free about
-            <span data-stat="beds_freed">…</span> hospital beds every day.
-          </p>
-          <ul class="response-cards">
-            <li class="response-card response-card--orange">
-              <h3>Older people</h3>
-              <p>Longer crossing times and pedestrian detection at signals.</p>
-              <a href="#story-older">Back to story 1</a>
-            </li>
-            <li class="response-card response-card--orange">
-              <h3>Heavier vehicles</h3>
-              <p>Safer trucks on city routes and lower speeds where people walk.</p>
-              <a href="#story-vehicles">Back to story 2</a>
-            </li>
-            <li class="response-card response-card--blue">
-              <h3>Winter</h3>
-              <p>Lighting at crossings and campaigns from autumn into winter.</p>
-              <a href="#story-winter">Back to story 3</a>
-            </li>
-            <li class="response-card response-card--blue">
-              <h3>Children and young people</h3>
-              <p>Awareness aimed at parents and at phone use while crossing.</p>
-              <a href="#story-young">Back to story 4</a>
-            </li>
-          </ul>
-          <p><a class="back-link" href="#big-picture">↑ Back to the big picture</a></p>
-        </div>
-      </section>
-
-      <!-- ================= ABOUT ================= -->
-      <section id="about" class="section" aria-labelledby="about-title">
-        <div class="container about-grid">
-          <div>
-            <h2 id="about-title">About the data</h2>
             <p>
-              Hospital data come from the Bureau of Infrastructure and Transport Research
-              Economics' national hospitalised injury workbook (BITRE, 2023), Traffic rows,
-              calendar years 2011–2021. Population for rates comes from ABS Table 59, June 2021
-              (ABS, 2026). All processing was done in a KNIME workflow; the website loads its
-              output tables unchanged.
+              Two things make the burden large: each stay is long, and there are many cases. Each
+              story explains one of them.
             </p>
-            <h3>Limitations</h3>
-            <ul>
-              <li>Admissions count hospital separations, not people.</li>
-              <li>
-                Counting changed three times: Victoria in 2012, bed-day rules in July 2015, and
-                NSW in 2017. The big-picture chart marks each change.
-              </li>
-              <li>
-                The 2021 death fields are blank, so the check without patients who died covers
-                2011–2020 only.
-              </li>
-              <li>The data show hospital use, not the causes of crashes.</li>
-              <li>The responses come from the cited research, not from these data.</li>
-            </ul>
           </div>
-          <div>
-            <h3>References</h3>
-            <ul class="references">
-              <li>
-                Australian Bureau of Statistics. (2026). <i>National, state and territory
-                population: Table 59</i> [Data set].
-              </li>
-              <li>Australian Government. (2021). <i>National road safety strategy 2021–30</i>.</li>
-              <li>
-                Beyer, F. R., &amp; Ker, K. (2009). Street lighting for preventing road traffic
-                injuries. <i>Cochrane Database of Systematic Reviews</i>, (1), CD004728.
-                https://doi.org/10.1002/14651858.CD004728.pub2
-              </li>
-              <li>
-                Bureau of Infrastructure and Transport Research Economics. (2023).
-                <i>Hospitalised injury</i> [Data set].
-              </li>
-              <li>
-                Department of Infrastructure, Transport, Regional Development, Communications and
-                the Arts. (2023). <i>Guide to safer freight vehicles</i>.
-              </li>
-              <li>
-                Hussain, Q., Feng, H., Grzebieta, R., Brijs, T., &amp; Olivier, J. (2019). The
-                relationship between impact speed and the probability of pedestrian fatality
-                during a vehicle-pedestrian crash. <i>Accident Analysis &amp; Prevention, 129</i>,
-                241–249. https://doi.org/10.1016/j.aap.2019.05.033
-              </li>
-              <li>
-                Phillips, R. O., Ulleberg, P., &amp; Vaa, T. (2011). Meta-analysis of the effect of
-                road safety campaigns on accidents. <i>Accident Analysis &amp; Prevention, 43</i>(3),
-                1204–1218. https://doi.org/10.1016/j.aap.2011.01.002
-              </li>
-              <li>
-                RAA. (2025, April 4). <i>Switch on your headlights as clocks switch back</i>.
-              </li>
-              <li>
-                Simmons, S. M., Caird, J. K., Ta, A., Sterzer, F., &amp; Hagel, B. E. (2020).
-                Plight of the distracted pedestrian. <i>Injury Prevention, 26</i>(2), 170–176.
-                https://doi.org/10.1136/injuryprev-2019-043426
-              </li>
-              <li>
-                Western, M. J., Withall, J., Sheppard, R., Greaves, C., Hillsdon, M., &amp;
-                Stathi, A. (2025). Why didn't the senior citizen cross the road?
-                <i>Age and Ageing</i>. https://doi.org/10.1093/ageing/afaf345
-              </li>
-            </ul>
+
+          <div class="story-map">
+            <section class="story-map-part" aria-labelledby="map-part-a">
+              <h3 id="map-part-a" class="part-band part-band--orange">
+                Part A · Why do stays last so long?
+              </h3>
+              <ul class="story-cards">
+                <li class="story-card story-card--orange">
+                  <p class="story-card-kicker">Story 1</p>
+                  <h4>
+                    <a href="story-older.html">Older pedestrians carry the heaviest burden</a>
+                  </h4>
+                  <p>
+                    People aged 75 and over: <span data-stat="bd_rate_ratio_75">…</span> times the
+                    all-ages bed-day rate.
+                  </p>
+                </li>
+                <li class="story-card story-card--orange">
+                  <p class="story-card-kicker">Story 2</p>
+                  <h4>
+                    <a href="story-vehicles.html">The heavier the vehicle, the longer the stay</a>
+                  </h4>
+                  <p>
+                    Hit by a truck or bus: <span data-stat="bdpc_truck">…</span> days in hospital per
+                    admission.
+                  </p>
+                </li>
+              </ul>
+            </section>
+            <section class="story-map-part" aria-labelledby="map-part-b">
+              <h3 id="map-part-b" class="part-band part-band--blue">
+                Part B · Why are there so many cases?
+              </h3>
+              <ul class="story-cards">
+                <li class="story-card story-card--blue">
+                  <p class="story-card-kicker">Story 3</p>
+                  <h4><a href="story-winter.html">Pedestrian admissions rise every winter</a></h4>
+                  <p>
+                    Winter: <span data-stat="winter_up">…</span> more pedestrian admissions than an
+                    average season.
+                  </p>
+                </li>
+                <li class="story-card story-card--blue">
+                  <p class="story-card-kicker">Story 4</p>
+                  <h4>
+                    <a href="story-young.html"
+                      >For young children, one road injury in six happens on foot</a
+                    >
+                  </h4>
+                  <p>
+                    Children aged 0–7: <span data-stat="share_0_7">…</span> of their road-injury
+                    admissions were pedestrians.
+                  </p>
+                </li>
+              </ul>
+            </section>
           </div>
         </div>
       </section>
@@ -538,16 +197,10 @@
     <!-- A11Y: one shared tooltip, announced politely to screen readers -->
     <div id="tooltip" class="tooltip" role="tooltip" aria-live="polite" hidden></div>
 
-    <!-- Scripts in the order used in the unit labs: library, constants, helpers, charts, interactions, then data loading -->
+    <!-- Scripts (SPEC §6): library, constants, helpers, interactions, then data loading (no charts on this page) -->
     <script src="lib/d3.v7.min.js"></script>
     <script src="js/shared-constants.js"></script>
     <script src="js/helpers.js"></script>
-    <script src="js/chart-a-big-picture.js"></script>
-    <script src="js/chart-b-bridge.js"></script>
-    <script src="js/chart-c-age-rates.js"></script>
-    <script src="js/chart-d-vehicle.js"></script>
-    <script src="js/chart-e-season.js"></script>
-    <script src="js/chart-f-young.js"></script>
     <script src="js/interactions.js"></script>
     <script src="js/load-data.js"></script>
   </body>

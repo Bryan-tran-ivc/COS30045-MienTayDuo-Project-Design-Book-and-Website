@@ -125,7 +125,7 @@ One site-wide setting: the reader's age group. It only **marks** a group in the 
 - Story map, `h2` "Where do the {beds_per_day} beds come from?": the formula card "Bed days = number of cases × days per case", then "Two things make the burden large: each stay is long, and there are many cases. Each story explains one of them." Then two columns (one below 768 px):
   - Part A, orange band "Part A · Why do stays last so long?": story cards 1 and 2.
   - Part B, blue band "Part B · Why are there so many cases?": story cards 3 and 4.
-  - Each story card: kicker ("Story 1"), title as an `h3` containing the link to the page (the whole card is clickable through the link), and one teaser line with one number:
+  - The part bands are `h3`. Each story card: kicker ("Story 1"), title as an `h4` containing the link to the page (the whole card is clickable through the link), and one teaser line with one number:
     1. Older pedestrians carry the heaviest burden — "People aged 75 and over: {bd_rate_ratio_75} times the all-ages bed-day rate."
     2. The heavier the vehicle, the longer the stay — "Hit by a truck or bus: {bdpc_truck} days in hospital per admission."
     3. Pedestrian admissions rise every winter — "Winter: {winter_up} more pedestrian admissions than an average season."
