@@ -46,6 +46,12 @@ const initChartControls = () => {
     chartState.c.order = value;
     if (drawnCharts.has("c")) updateChartC();
   });
+  // Chart D measure: days per case or share of cases vs bed days (task 2.5)
+  wireToggle("toggle-d", (value) => {
+    if (chartState.d.measure === value) return;
+    chartState.d.measure = value;
+    if (drawnCharts.has("d")) updateChartD();
+  });
   wireToggle("toggle-e", (value) => {
     if (chartState.e.view === value) return;
     chartState.e.view = value;

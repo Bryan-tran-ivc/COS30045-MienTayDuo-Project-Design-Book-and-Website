@@ -104,7 +104,18 @@
               <!-- A11Y: native select with a visible label -->
               <label class="select-label" for="select-d">Age group</label>
               <select id="select-d"></select>
+              <!-- A11Y: segmented toggle uses real buttons with aria-pressed -->
+              <div class="segmented" role="group" aria-label="Measure" id="toggle-d">
+                <button type="button" data-value="perCase" aria-pressed="true">Days per case</button>
+                <button type="button" data-value="share" aria-pressed="false">
+                  Share of cases vs bed days
+                </button>
+              </div>
             </div>
+            <ul class="legend" id="legend-d" aria-label="Legend" hidden>
+              <li><span class="swatch swatch--blue"></span>Share of pedestrian admissions</li>
+              <li><span class="swatch swatch--orange"></span>Share of pedestrian bed days</li>
+            </ul>
             <div class="chart" id="chart-d"></div>
             <p class="chart-note">
               Vehicles are ordered from lightest to heaviest. Other and unspecified vehicles are not

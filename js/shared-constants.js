@@ -234,7 +234,7 @@ const formatters = {
 const chartState = {
   a: { showWithoutDeaths: false, highlight: null, year: null }, // highlight: null | "bed" | "adm"; year: last scrubbed
   c: { measure: "bedDays", order: "age" }, // measure: "bedDays" | "admissions"; order: "age" | "value"
-  d: { ageGroup: ALL_AGES },
+  d: { ageGroup: ALL_AGES, measure: "perCase" }, // measure: "perCase" | "share"
   e: { view: "average" }, // "average" | "year"
 };
 
