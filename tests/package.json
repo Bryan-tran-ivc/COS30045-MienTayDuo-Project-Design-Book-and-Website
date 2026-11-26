@@ -1,0 +1,8 @@
+{
+  "name": "mientayduo-site-tests",
+  "private": true,
+  "type": "module",
+  "description": "Automated checks for the MienTayDuo website (see SPEC.md §7)",
+  "scripts": { "test": "node check-site.mjs" },
+  "devDependencies": { "axe-core": "^4.10.0", "playwright-core": "^1.48.0" }
+}

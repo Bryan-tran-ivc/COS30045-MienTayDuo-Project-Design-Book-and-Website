@@ -1,0 +1,124 @@
+<!doctype html>
+<!--
+  File: _template.html
+  Purpose: Master copy of the shared page shell (SPEC.md §3.0): skip link, header with the accessibility settings and the
+           main navigation, the hooks for the breadcrumb and story pager, footer, shared tooltip and the script order.
+           There is no build step, so every page holds a copy of this header and footer. Change them here first, then
+           paste the change into all eight pages in the same pull request. This file is not linked from the site.
+
+  When making a new page from this template, change only the parts marked "PAGE:":
+    1. <title> and the meta description.
+    2. data-page on <body> (home, big-picture, story-older, story-vehicles, story-winter, story-young,
+       what-can-be-done, about).
+    3. In the nav, put aria-current="page" on this page's link (and only there). On a story page, also add the
+       class "is-current" to the Part A or Part B button that holds it.
+    4. The content of <main>.
+    5. This page's chart scripts, between helpers.js and interactions.js.
+  Project: COS30045 Data Visualisation · Team MienTayDuo · Tran Quang Huy (106212636), Chung Hien Thong (106212681)
+-->
+<html lang="en-AU">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- PAGE: title and description -->
+    <title>Page name · Few cases, long stays</title>
+    <meta name="description" content="One sentence about this page." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%232167ab'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/visualisation.css" />
+  </head>
+  <!-- PAGE: data-page -->
+  <body data-page="template">
+    <!-- A11Y: skip link is the first focusable element -->
+    <a class="skip" href="#main">Skip to content</a>
+
+    <!-- ===== SHARED HEADER (master copy: _template.html) ===== -->
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="index.html">MienTayDuo <span>· Few cases, long stays</span></a>
+        <!-- A11Y: reading settings (larger text, higher contrast, reduce motion); a nonmodal panel that Escape closes -->
+        <div class="access-widget">
+          <button type="button" id="access-trigger" class="access-trigger" aria-controls="access-panel" aria-expanded="false" aria-label="Accessibility settings" aria-describedby="access-help">
+            <svg viewBox="0 0 48 48" width="28" height="28" aria-hidden="true" focusable="false"><circle cx="24" cy="8.5" r="3.4" fill="currentColor" /><path d="M8 17.5c10.5 3.4 21.5 3.4 32 0M24 19v9m0 0-7 12m7-12 7 12" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <span class="access-tooltip" aria-hidden="true">Accessibility settings</span>
+          </button>
+          <span id="access-help" class="sr-only">Press Enter or Space to open reading settings. Press Escape to close.</span>
+          <section id="access-panel" class="access-panel" aria-labelledby="access-heading" hidden>
+            <div class="access-panel-header">
+              <h2 id="access-heading">Reading preferences</h2>
+              <button type="button" id="access-close" aria-label="Close accessibility settings">Close</button>
+            </div>
+            <p>Adjust the display for this browser.</p>
+            <label class="access-option"><span><strong>Larger text</strong><small>Increase text size across the page</small></span><input id="access-large" type="checkbox" /></label>
+            <label class="access-option"><span><strong>Higher contrast</strong><small>Strengthen borders and text contrast</small></span><input id="access-contrast" type="checkbox" /></label>
+            <label class="access-option"><span><strong>Reduce motion</strong><small>Stop chart animations</small></span><input id="access-motion" type="checkbox" /></label>
+            <div class="access-actions">
+              <button type="button" id="access-table">Show chart data table</button>
+              <button type="button" id="access-reset">Reset settings</button>
+            </div>
+            <p id="access-status" class="sr-only" aria-live="polite"></p>
+          </section>
+        </div>
+        <nav class="site-nav" aria-label="Main">
+          <ul class="nav-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="big-picture.html">Big picture</a></li>
+            <li class="nav-group">
+              <!-- A11Y: disclosure button; aria-expanded says whether its list of stories is open -->
+              <button class="nav-group-button" type="button" aria-expanded="false" aria-controls="nav-part-a">A · Longer stays</button>
+              <ul id="nav-part-a" class="nav-sub" aria-label="Part A: why do stays last so long?">
+                <li><a href="story-older.html">Story 1 · Older people</a></li>
+                <li><a href="story-vehicles.html">Story 2 · Heavier vehicles</a></li>
+              </ul>
+            </li>
+            <li class="nav-group">
+              <!-- A11Y: disclosure button; aria-expanded says whether its list of stories is open -->
+              <button class="nav-group-button" type="button" aria-expanded="false" aria-controls="nav-part-b">B · More cases</button>
+              <ul id="nav-part-b" class="nav-sub" aria-label="Part B: why are there so many cases?">
+                <li><a href="story-winter.html">Story 3 · Winter</a></li>
+                <li><a href="story-young.html">Story 4 · Children and young people</a></li>
+              </ul>
+            </li>
+            <li><a href="what-can-be-done.html">What can be done</a></li>
+            <li><a href="about.html">About the data</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- PAGE: content of <main>. Keep the breadcrumb and pager hooks only on pages in the story order (big picture,
+         the four stories, what can be done). Build pages from the shared components in css/base.css, in this
+         order (see story-older.html): .eyebrow, h1, .lead, .age-status, .hero-evidence (.metric + .question-card),
+         section.panel (.panel-head with h2 and .controls, .chart-period, .controls, .chart-context, .annotation,
+         .chart, .chart-caption, details, .data-links), then aside.insight. One h1 per page. -->
+    <main id="main" class="wrap">
+      <!-- Story-order pages only: filled by js/site-components.js (Huy, task 1.5) -->
+      <div class="breadcrumb" data-breadcrumb></div>
+      <div class="intro">
+        <p class="eyebrow">Kicker, e.g. Part A / Story 1</p>
+        <h1>Page title</h1>
+        <p class="lead">Intro text. Numbers come from data-stat spans, e.g. <span data-stat="beds_per_day">…</span>.</p>
+      </div>
+      <!-- Story-order pages only: filled by js/site-components.js (Huy, task 1.5) -->
+      <div class="story-pager" data-pager></div>
+    </main>
+
+    <!-- ===== SHARED FOOTER (master copy: _template.html) ===== -->
+    <footer class="wrap">
+      <span>BITRE road injury data · 2011–2021 · Team MienTayDuo: Tran Quang Huy and Chung Hien Thong</span>
+      <a href="about.html">Methods and sources →</a>
+    </footer>
+
+    <!-- A11Y: one shared tooltip, announced politely to screen readers (helpers.js expects it on every page) -->
+    <div id="tooltip" class="chart-tooltip" role="tooltip" aria-live="polite" hidden></div>
+
+    <!-- Scripts (SPEC §6): library, constants, helpers, [site-components.js, Huy 1.5], this page's charts, interactions, then data loading -->
+    <script src="lib/d3.v7.min.js"></script>
+    <script src="js/shared-constants.js"></script>
+    <script src="js/helpers.js"></script>
+    <!-- js/site-components.js goes here once it exists (Huy, task 1.5) -->
+    <!-- PAGE: this page's chart files, e.g. <script src="js/chart-c-age-rates.js"></script> -->
+    <script src="js/interactions.js"></script>
+    <script src="js/load-data.js"></script>
+  </body>
+</html>
