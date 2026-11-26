@@ -14,7 +14,7 @@
       name="description"
       content="Per 100,000 people, Australians aged 75 and over had the most pedestrian hospital bed days in 2021, and their stays were among the longest."
     />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23eb6834'/%3E%3C/svg%3E" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%232167ab'/%3E%3C/svg%3E" />
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/visualisation.css" />
   </head>
@@ -25,7 +25,7 @@
     <!-- ===== SHARED HEADER (master copy: _template.html) ===== -->
     <header class="site-header">
       <div class="container header-inner">
-        <a class="brand" href="index.html">Few cases, long stays</a>
+        <a class="brand" href="index.html">MienTayDuo <span>· Few cases, long stays</span></a>
         <!-- A11Y: below 1024 px the menu button shows and hides the whole navigation -->
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav-list">
           Menu
@@ -63,56 +63,89 @@
     <main id="main">
       <div class="breadcrumb" data-breadcrumb></div>
 
-      <article class="section story-page" aria-labelledby="page-title">
-        <div class="container story">
-          <div class="story-text">
-            <p class="story-kicker">Part A · Story 1 · Older people</p>
-            <h1 id="page-title">Older pedestrians carry the heaviest burden</h1>
-            <p>
-              Counts alone would hide this, because age groups differ in size. Per 100,000 people,
-              those aged 75 and over had the most pedestrian bed days in 2021:
-              <span data-stat="bd_rate_75">…</span> against
-              <span data-stat="bd_rate_all">…</span> for all ages,
-              <span data-stat="bd_rate_ratio_75">…</span> times as many. Each of their admissions
-              lasted <span data-stat="bdpc_75">…</span> days. Within every adult age group,
-              pedestrians also stayed 1.7 to 2.7 times longer than car drivers of the same age, so
-              this is not only an age effect.
-            </p>
-            <!-- A11Y: shows the reader's age group (filled by interactions.js); a status region, so Clear is announced -->
-            <p class="age-status" data-age-status role="status" hidden></p>
-            <aside class="response" aria-labelledby="response-title">
-              <h2 id="response-title">What can be done</h2>
-              <p>
-                Give slower walkers time to cross. Older adults walk about 0.77 m per second on
-                average, well below the 1.2 m per second that most crossings assume (Western et al.,
-                2025). Longer crossing times, pedestrian detection at signals, and awareness
-                messages aimed at drivers and older people all target this group.
-              </p>
-            </aside>
+      <article class="story-page" aria-labelledby="page-title">
+        <div class="container">
+          <p class="eyebrow">Part A / Story 1</p>
+          <h1 id="page-title">Older pedestrians carry the heaviest burden</h1>
+          <p class="lead">
+            Counts alone would hide this, because age groups differ in size. Per 100,000 people,
+            those aged 75 and over had the most pedestrian bed days in 2021, and each of their
+            admissions lasted <span data-stat="bdpc_75">…</span> days. Within every adult age group,
+            pedestrians also stayed 1.7 to 2.7 times longer than car drivers of the same age, so this
+            is not only an age effect.
+          </p>
+          <!-- A11Y: shows the reader's age group (filled by interactions.js); a status region, so Clear is announced -->
+          <p class="age-status" data-age-status role="status" hidden></p>
+
+          <div class="hero-evidence">
+            <div class="metric metric--orange">
+              <div>
+                <p class="metric-label">Bed days per 100,000 people, aged 75+</p>
+                <p class="metric-figure">
+                  <span class="metric-value" data-stat="bd_rate_75">…</span>
+                  <span class="metric-unit">/ <span data-stat="bd_rate_all">…</span> for all ages</span>
+                </p>
+              </div>
+              <p class="metric-delta"><span data-stat="bd_rate_ratio_75">…</span>×</p>
+            </div>
+            <div class="question-card">
+              <p class="card-label">The question</p>
+              <h2>Do older people also have more admissions?</h2>
+              <p>Switch the chart below to admissions to check.</p>
+            </div>
           </div>
 
-          <figure class="chart-figure story-figure" aria-labelledby="chart-c-title">
-            <h2 id="chart-c-title" class="chart-title">People aged 75+ carry the heaviest burden</h2>
-            <p class="chart-subtitle" id="chart-c-subtitle">
-              Pedestrian bed days per 100,000 people, 2021
-            </p>
-            <div class="chart-controls">
-              <!-- A11Y: segmented toggle uses real buttons with aria-pressed -->
+          <figure class="chart-figure" aria-labelledby="chart-c-title">
+            <div class="panel-head">
+              <h2 id="chart-c-title" class="chart-title">People aged 75+ carry the heaviest burden</h2>
+              <!-- A11Y: toggle buttons use real buttons with aria-pressed -->
               <div class="segmented" role="group" aria-label="Measure" id="toggle-c">
                 <button type="button" data-value="bedDays" aria-pressed="true">Bed days</button>
                 <button type="button" data-value="admissions" aria-pressed="false">Admissions</button>
               </div>
-              <div class="segmented" role="group" aria-label="Order" id="toggle-c-order">
+            </div>
+            <p class="chart-subtitle" id="chart-c-subtitle">
+              Pedestrian bed days per 100,000 people, 2021
+            </p>
+            <div class="chart-controls">
+              <span class="control-label" id="order-c-label">Order</span>
+              <div class="segmented" role="group" aria-labelledby="order-c-label" id="toggle-c-order">
                 <button type="button" data-value="age" aria-pressed="true">Age order</button>
                 <button type="button" data-value="value" aria-pressed="false">Highest first</button>
               </div>
             </div>
+            <ul class="legend" aria-label="Legend">
+              <li><span class="swatch" id="swatch-c"></span><span id="legend-c-label">Bed days per 100,000 people</span></li>
+              <li class="legend-reference">Dashed line: rate for all ages</li>
+            </ul>
+            <!-- A11Y: the reading box says what the chart shows now; announced when a control changes it -->
+            <p class="chart-reading" id="reading-c" aria-live="polite"></p>
             <div class="chart" id="chart-c"></div>
+            <div class="chart-captions">
+              <p class="chart-note">
+                Rates divide each age group's pedestrian bed days or admissions by its June 2021
+                population, so large and small age groups can be compared. They do not adjust for
+                time spent walking.
+              </p>
+            </div>
             <details class="data-table">
               <summary>Show data table</summary>
               <div class="table-wrap" id="table-c"></div>
             </details>
+            <p class="data-links">
+              Download the <a href="data/age_story_2021.csv">2021 age-group data (CSV)</a>.
+            </p>
           </figure>
+
+          <aside class="insight" aria-labelledby="response-title">
+            <h2 id="response-title">What can be done</h2>
+            <p>
+              Give slower walkers time to cross. Older adults walk about 0.77 m per second on average,
+              well below the 1.2 m per second that most crossings assume (Western et al., 2025).
+              Longer crossing times, pedestrian detection at signals, and awareness messages aimed at
+              drivers and older people all target this group.
+            </p>
+          </aside>
         </div>
       </article>
 
@@ -122,14 +155,14 @@
     <!-- ===== SHARED FOOTER (master copy: _template.html) ===== -->
     <footer class="site-footer">
       <div class="container">
-        <p>
-          COS30045 Data Visualisation · Swinburne University of Technology Vietnam · Team
-          MienTayDuo: Tran Quang Huy (106212636) and Chung Hien Thong (106212681) · 2026
-        </p>
-        <p>
-          Data: BITRE (2023) hospitalised injury, 2011–2021; ABS (2026) population, June 2021.
-          Sources and limits: <a href="about.html">About the data</a>.
-        </p>
+        <div>
+          <p>
+            COS30045 Data Visualisation · Swinburne University of Technology Vietnam · Team
+            MienTayDuo: Tran Quang Huy (106212636) and Chung Hien Thong (106212681) · 2026
+          </p>
+          <p>Data: BITRE (2023) hospitalised injury, 2011–2021; ABS (2026) population, June 2021.</p>
+        </div>
+        <a class="footer-link" href="about.html">Methods and sources →</a>
       </div>
     </footer>
 

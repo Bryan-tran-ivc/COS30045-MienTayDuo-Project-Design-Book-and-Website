@@ -1,7 +1,7 @@
 # SPEC — "Few cases, long stays" website
 
 COS30045 Data Visualisation · Team MienTayDuo · Tran Quang Huy (106212636), Chung Hien Thong (106212681)
-Version 2.0 (Week 13, 26 November 2026): the single page becomes a site of eight pages. Version 1.0 (Week 12, 25 November 2026) was the single scrolling page, tagged `v0.1-single-page`. This file is the single source of truth for the website. Read it fully before writing code. When the spec and the code disagree, change the code, or change the spec first and say why.
+Version 2.1 (Week 13, 26 November 2026): every page uses the shared design system in §5. Version 2.0 (Week 13, 26 November 2026): the single page becomes a site of eight pages. Version 1.0 (Week 12, 25 November 2026) was the single scrolling page, tagged `v0.1-single-page`. This file is the single source of truth for the website. Read it fully before writing code. When the spec and the code disagree, change the code, or change the spec first and say why.
 
 **Who writes which part of this spec (task 0.5):** Thông: §1, §3 (except §3.7.1 and §3.8.1), §4.A–D, §6, §7, §9. Huy: §4.E, §4.F, §3.7.1 (beds-freed calculator), §3.8.1 (glossary). Shared: §2, §4.0, §5, §8.
 
@@ -193,15 +193,15 @@ Kicker "Part B · Story 4 · Children and young people". Age status line under t
 ## 4. Charts
 
 ### 4.0 Rules for every chart
-- Each chart lives in a `<figure>` with: a title (a finding, not a label; `h2` when the figure sits directly under the page's `h1`, `h3` inside a section that has its own `h2`, see §3), a subtitle `<p class="chart-subtitle">` (measure · group · years), the control row (if any) above the plot, the plot container `<div class="chart" id="chart-x">`, an HTML legend when there are ≥2 series, and `<details class="data-table"><summary>Show data table</summary>…</details>` built from the same data.
+- Each chart lives in a `<figure>` with: a title (a finding, not a label; `h2` when the figure sits directly under the page's `h1`, `h3` inside a section that has its own `h2`, see §3), a subtitle `<p class="chart-subtitle">` (measure · group · years), the control row (if any) above the plot, an HTML legend row (`.legend`, reference-line key on the right), a reading box `<p class="chart-reading">` that states what the chart shows in its current state (`aria-live="polite"` when a control changes it), the plot container `<div class="chart" id="chart-x">`, captions (`.chart-captions`), `<details class="data-table"><summary>Show data table</summary>…</details>` built from the same data, and `.data-links` to the CSV files. The figure is a white panel (`.chart-figure`); when it has one main toggle, the title and the toggle share a `.panel-head` row.
 - SVG: `role="group"` (not `role="img"`, which would hide the focusable marks inside it from screen readers), `aria-labelledby` pointing to a `<title>` and `aria-describedby` to a `<desc>` inside the SVG; the `<desc>` states the main finding in one sentence.
 - **Width:** charts are drawn at the container's real width (no fixed `viewBox` scaling), so text never shrinks below 12 px. Redraw on window resize (debounced 200 ms) without animation. Height: fixed per chart, with a smaller value below 768 px.
 - **Scales:** every bar starts at zero; the line chart's y-axis starts at zero. No dual axes. Gridlines light (`--grid`), axis text `--ink-2`, 12 px minimum.
 - **Marks:** bars ≥ 8 px wide, rounded top corners (2 px), 2 px gap between neighbouring bars; lines 2 px; points 8 px diameter with a 1.5 px surface-coloured ring.
-- **Colour (one rule for the whole site):** blue `#2a78d6` = admissions (how many cases); orange `#eb6834` = bed days (how long they stay); grey `#8c8b85` = comparison group (all road injuries, summer). Text never uses series colours.
+- **Colour (one rule for the whole site):** blue `#2167ab` = admissions (how many cases); orange `#b65737` = bed days (how long they stay); grey `#6e797d` = comparison group (all road injuries, summer). Text never uses series colours.
 - **Labels:** selective direct labels (line ends, bar values); one annotation per chart that states its finding in words.
 - **Tooltips:** one shared tooltip element (`#tooltip`, `role="tooltip"`). Shown on `mouseenter`/`mousemove` and on keyboard `focus` of a mark; hidden on `mouseleave`, `blur` and Escape. Content: bold heading, value with unit, group/year, and number of admissions behind the mark. Positioned near the pointer (or the focused mark), kept inside the viewport.
-- **Focusable marks:** each data mark has `tabindex="0"` and an `aria-label` that reads like the tooltip. Focus outline visible (2 px `--ink`).
+- **Focusable marks:** each data mark has `tabindex="0"` and an `aria-label` that reads like the tooltip. Focus outline visible (2–3 px `--focus`).
 - **Motion:** transitions 600 ms `d3.easeCubicInOut`; bars grow from the baseline the first time the chart scrolls into view (IntersectionObserver, once). If `prefers-reduced-motion: reduce`, all durations are 0.
 - **Update pattern:** use `selection.join(enter, update, exit)` with key functions so marks animate between states.
 
@@ -271,20 +271,25 @@ Kicker "Part B · Story 4 · Children and young people". Age status line under t
 
 ## 5. Visual design tokens (`css/base.css` `:root`)
 
+The site follows one shared design system (from Huy's page prototype, adopted for every page in v2.1): cool grey
+page, white panels, a blue accent, dark pressed buttons.
+
 ```
---surface: #fcfcfb;   --surface-2: #f3f2ee;  --card: #ffffff;
---ink: #0b0b0b;       --ink-2: #52514e;      --ink-3: #6b6a65;
---grid: #e7e6e2;      --border: #d9d8d3;
---blue: #2a78d6;      --blue-tint: #eaf2fc;
---orange: #eb6834;    --orange-tint: #fdefe9;
---grey: #8c8b85;
---focus: #0b0b0b;
-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif
+--surface: #f6f8fa;   --card: #ffffff;       --wash: #edf3f8;
+--ink: #172532;       --ink-2: #526171;
+--grid: #e6ebef;      --border: #d4dce3;     --control-border: #748391;
+--blue: #2167ab;      --orange: #b65737;     --grey: #6e797d;
+--focus: #7040aa;     --radius: 12px;
+font: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif
 ```
-- Body 16 px / 1.6; `h1` 40 px (28 px mobile); `h2` 28 px; `h3` 20 px; chart text 12–13 px; KPI numbers 40 px bold; hero number 96 px (64 px mobile) orange.
-- Content width max 1100 px, side padding 24 px (16 px mobile). Story layout: two columns (chart 60%, text 40%) on ≥ 1024 px, alternating sides between stories (Story 1 and 3: text left; Story 2 and 4: text right); one column below 1024 px.
-- Reader's age-group band in charts (v2.0): `--grid` (`COLORS.highlight`) behind the marks, plus a bold axis label, so the marking never depends on the band's colour alone.
-- Contrast (checked): body text on surface 19.2:1; `--ink-2` 7.7:1; blue 4.3:1, orange 3.1:1, grey 3.3:1 against `--surface` (graphical objects ≥ 3:1, WCAG 2.1 SC 1.4.11). Never put text in orange or grey on the surface; KPI numbers in blue/orange are large text (≥ 24 px bold) so 3:1 applies.
+- Body 16 px / 1.55. `h1` `clamp(2.6rem, 5vw, 4.75rem)`, weight 730, tight tracking (−0.048em), max 19 characters wide; `h2` 1.2rem; chart text 12–13 px.
+- Page opening, every page: eyebrow (`.eyebrow`, blue uppercase 0.72rem, e.g. "Part A / Story 1"), `h1`, lead (`.lead`, 1.16rem, `--ink-2`, max 68ch), then `.hero-evidence`: a metric card (`.metric`, big number with a 4 px coloured left edge: orange for bed days, blue for admissions) next to a question card (`.question-card`, "The question" + a question the chart below answers).
+- Story pages, one column: opening → chart panel (`.chart-figure`) → `aside.insight` ("What can be done" or "What the data can say", `--wash` background).
+- Controls: buttons and selects 44 px high, 1 px `--control-border`, radius 0.5rem; pressed buttons (`aria-pressed="true"`) are `--ink` with white text.
+- Header: white, brand "MienTayDuo · Few cases, long stays"; current nav item `--wash` background with a 2 px blue underline. Footer: credits left, "Methods and sources →" right.
+- Content width max 1120 px, side padding 24 px (14 px below 768 px, 10 px below 420 px).
+- Reader's age-group band in charts (v2.0): `#e3edf6` (`COLORS.highlight`) behind the marks, plus a bold axis label, so the marking never depends on the band's colour alone.
+- Contrast (checked against white): `--ink` 15.6:1; `--ink-2` 6.4:1; blue 5.8:1, orange 4.8:1, grey 4.5:1 (graphical objects ≥ 3:1, WCAG 2.1 SC 1.4.11); control borders 3.9:1.
 
 ---
 

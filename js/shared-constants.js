@@ -6,15 +6,16 @@
  */
 
 // ---------- Colour rule (SPEC §4.0): blue = admissions, orange = bed days, grey = comparison ----------
+// Same values as the CSS tokens in base.css (the team's shared palette)
 const COLORS = {
-  admissions: "#2a78d6",
-  bedDays: "#eb6834",
-  comparison: "#8c8b85",
-  ink: "#0b0b0b",
-  ink2: "#52514e",
-  grid: "#e7e6e2",
+  admissions: "#2167ab",
+  bedDays: "#b65737",
+  comparison: "#6e797d",
+  ink: "#172532",
+  ink2: "#526171",
+  grid: "#e6ebef",
   card: "#ffffff",
-  highlight: "#e7e6e2", // band behind the reader's age group (SPEC §5); always paired with a bold axis label
+  highlight: "#e3edf6", // band behind the reader's age group (SPEC §5); always paired with a bold axis label
 };
 
 // ---------- Layout ----------

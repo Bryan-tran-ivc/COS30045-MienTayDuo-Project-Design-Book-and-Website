@@ -43,6 +43,7 @@ const STAT_FILES = {
   truck_case_share: ["vehicle"],
   truck_bed_share: ["vehicle"],
   car_case_share: ["vehicle"],
+  truck_car_ratio: ["vehicle"],
   winter_up: ["seasonAverage"],
   summer_down: ["seasonAverage"],
   share_winter: ["seasonAverage"],
@@ -173,6 +174,7 @@ const computeDerivedValues = () => {
       stats.truck_bed_share = formatters.pct1(truck.bed_day_share_pct);
     }
     if (train) stats.bdpc_train = formatters.dec1(train.bed_days_per_case);
+    if (truck && car) stats.truck_car_ratio = formatters.ratio1(truck.bed_days_per_case / car.bed_days_per_case);
   }
 
   if (chartData.seasonAverage) {

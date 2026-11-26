@@ -15,7 +15,7 @@
       name="description"
       content="Pedestrians' share of road-injury hospital bed days in Australia is about twice their share of admissions, in every year from 2011 to 2021."
     />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23eb6834'/%3E%3C/svg%3E" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%232167ab'/%3E%3C/svg%3E" />
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/visualisation.css" />
   </head>
@@ -26,7 +26,7 @@
     <!-- ===== SHARED HEADER (master copy: _template.html) ===== -->
     <header class="site-header">
       <div class="container header-inner">
-        <a class="brand" href="index.html">Few cases, long stays</a>
+        <a class="brand" href="index.html">MienTayDuo <span>· Few cases, long stays</span></a>
         <!-- A11Y: below 1024 px the menu button shows and hides the whole navigation -->
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav-list">
           Menu
@@ -65,22 +65,34 @@
       <div class="breadcrumb" data-breadcrumb></div>
 
       <!-- ================= THE BIG PICTURE ================= -->
-      <section class="section page-intro" aria-labelledby="page-title">
+      <section class="page-intro" aria-labelledby="page-title">
         <div class="container">
-          <p class="eyebrow">Pedestrian road injuries in Australia, 2011–2021</p>
+          <p class="eyebrow">Overview / 2011–2021</p>
           <h1 id="page-title">The big picture</h1>
-          <p class="section-intro">
-            In 2021, pedestrians were <span data-stat="ped_adm_share_2021">…</span> of
-            road-injury admissions but <span data-stat="ped_bed_share_2021">…</span> of the days
-            those patients spent in hospital. A pedestrian stayed
-            <span data-stat="ped_bdpc_2021">…</span> days on average, against
-            <span data-stat="all_bdpc_2021">…</span> days for all road injuries. The gap is not
-            new: in every year from 2011 to 2021, the pedestrian share of bed days was
-            <span data-stat="gap_min">…</span> to <span data-stat="gap_max">…</span> times their
-            share of admissions.
+          <p class="lead">
+            In 2021, pedestrians were <span data-stat="ped_adm_share_2021">…</span> of road-injury
+            admissions but <span data-stat="ped_bed_share_2021">…</span> of the days those patients
+            spent in hospital.
           </p>
           <!-- A11Y: shows the reader's age group (filled by interactions.js); a status region, so Clear is announced -->
           <p class="age-status" data-age-status role="status" hidden></p>
+
+          <div class="hero-evidence">
+            <div class="metric metric--orange">
+              <div>
+                <p class="metric-label">Days in hospital per pedestrian admission, 2021</p>
+                <p class="metric-figure">
+                  <span class="metric-value" data-stat="ped_bdpc_2021">…</span>
+                  <span class="metric-unit">/ <span data-stat="all_bdpc_2021">…</span> for all road injuries</span>
+                </p>
+              </div>
+            </div>
+            <div class="question-card">
+              <p class="card-label">The question</p>
+              <h2>Is the gap new, or was it there every year?</h2>
+              <p>Move along the chart below to read each year from 2011 to 2021.</p>
+            </div>
+          </div>
 
           <figure class="chart-figure" aria-labelledby="chart-a-title">
             <h2 id="chart-a-title" class="chart-title">
@@ -90,59 +102,70 @@
               Pedestrian share of all road-injury bed days and admissions, Australia, 2011–2021
             </p>
             <div class="chart-controls">
+              <!-- A11Y: legend entries are toggle buttons (aria-pressed) that highlight one line -->
+              <ul class="legend segmented" id="legend-a" aria-label="Legend: select a line to highlight it">
+                <li>
+                  <button type="button" class="legend-button" data-series="bed" aria-pressed="false">
+                    <span class="swatch swatch--orange"></span>Share of bed days
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="legend-button" data-series="adm" aria-pressed="false">
+                    <span class="swatch swatch--blue"></span>Share of admissions
+                  </button>
+                </li>
+              </ul>
               <!-- A11Y: native checkbox with a visible label -->
               <label class="checkbox">
                 <input type="checkbox" id="toggle-deaths" />
                 Remove bed days of patients who died (2011–2020)
               </label>
             </div>
-            <!-- A11Y: legend entries are toggle buttons (aria-pressed) that highlight one line -->
-            <ul class="legend" id="legend-a" aria-label="Legend: select a line to highlight it">
-              <li>
-                <button type="button" class="legend-button" data-series="bed" aria-pressed="false">
-                  <span class="swatch swatch--orange"></span>Share of bed days
-                </button>
-              </li>
-              <li>
-                <button type="button" class="legend-button" data-series="adm" aria-pressed="false">
-                  <span class="swatch swatch--blue"></span>Share of admissions
-                </button>
-              </li>
+            <ul class="legend" aria-label="Legend">
               <li class="legend-deaths" hidden>
                 <span class="swatch swatch--orange-dashed"></span>Bed days without patients who
                 died
               </li>
+              <li class="legend-reference">Dashed grey lines: changes in counting</li>
             </ul>
+            <p class="chart-reading">
+              In every year from 2011 to 2021, the pedestrian share of bed days was
+              <span data-stat="gap_min">…</span> to <span data-stat="gap_max">…</span> times their
+              share of admissions.
+            </p>
             <div class="chart" id="chart-a"></div>
-            <p class="chart-note" id="note-a-deaths" hidden>
-              2021 is not shown for this line: the death fields are blank that year.
-            </p>
-            <p class="chart-note">
-              Move the pointer over the chart, or focus it and use the arrow keys, to read each
-              year. Select a legend entry to highlight its line.
-            </p>
-            <p class="chart-note">
-              Dashed grey lines mark changes in how cases or bed days were counted; hover or
-              focus a line to read about it.
-            </p>
+            <div class="chart-captions">
+              <p class="chart-note" id="note-a-deaths" hidden>
+                2021 is not shown for this line: the death fields are blank that year.
+              </p>
+              <p class="chart-note">
+                Move the pointer over the chart, or focus it and use the arrow keys, to read each
+                year. Select a legend entry to highlight its line.
+              </p>
+              <p class="chart-note">
+                Dashed grey lines mark changes in how cases or bed days were counted; hover or focus a
+                line to read about it.
+              </p>
+            </div>
             <details class="data-table">
               <summary>Show data table</summary>
               <div class="table-wrap" id="table-a"></div>
             </details>
+            <p class="data-links">
+              Download the data:
+              <a href="data/pedestrian_share_by_year.csv">pedestrian shares by year (CSV)</a> ·
+              <a href="data/annual_totals.csv">all road injuries by year (CSV)</a>.
+            </p>
           </figure>
         </div>
       </section>
 
       <!-- ================= BRIDGE: WHO MAKES THE CASES, WHO FILLS THE BEDS ================= -->
-      <section id="bridge" class="section section--tint" aria-labelledby="bridge-title">
+      <section id="bridge" class="section" aria-labelledby="bridge-title">
         <div class="container">
           <h2 id="bridge-title">Who makes the cases, and who fills the beds?</h2>
           <p class="section-intro">
             Young people make most of the cases, while older people fill most of the beds.
-            People under 40 were <span data-stat="under40_case_share">…</span> of pedestrian
-            admissions in 2021 but only <span data-stat="under40_bed_share">…</span> of the bed
-            days. People aged 65 and over were <span data-stat="over65_case_share">…</span> of
-            admissions and <span data-stat="over65_bed_share">…</span> of bed days.
           </p>
 
           <figure class="chart-figure" aria-labelledby="chart-b-title">
@@ -156,25 +179,36 @@
               <li><span class="swatch swatch--blue"></span>Share of pedestrian admissions</li>
               <li><span class="swatch swatch--orange"></span>Share of pedestrian bed days</li>
             </ul>
-            <div class="chart" id="chart-b"></div>
-            <p class="chart-note">
-              Select an age group to open its story: 40 and over, Story 1 (older pedestrians); under
-              40, Story 4 (children and young people). On a touch screen, tap twice.
+            <p class="chart-reading">
+              People under 40 were <span data-stat="under40_case_share">…</span> of pedestrian
+              admissions in 2021 but only <span data-stat="under40_bed_share">…</span> of the bed days.
+              People aged 65 and over were <span data-stat="over65_case_share">…</span> of admissions
+              and <span data-stat="over65_bed_share">…</span> of bed days.
             </p>
+            <div class="chart" id="chart-b"></div>
+            <div class="chart-captions">
+              <p class="chart-note">
+                Select an age group to open its story: 40 and over, Story 1 (older pedestrians); under
+                40, Story 4 (children and young people). On a touch screen, tap twice.
+              </p>
+            </div>
             <details class="data-table">
               <summary>Show data table</summary>
               <div class="table-wrap" id="table-b"></div>
             </details>
+            <p class="data-links">
+              Download the <a href="data/age_story_2021.csv">2021 age-group data (CSV)</a>.
+            </p>
           </figure>
 
-          <div class="formula-card formula-card--next">
-            <p class="formula">Bed days = number of cases × days per case</p>
+          <aside class="insight formula-card" aria-labelledby="formula-title">
+            <h2 id="formula-title" class="formula">Bed days = number of cases × days per case</h2>
             <p>Each part of the story takes one side of this sum.</p>
             <div class="formula-links">
               <a class="pill pill--orange" href="story-older.html">A · Longer stays →</a>
               <a class="pill pill--blue" href="story-winter.html">B · More cases →</a>
             </div>
-          </div>
+          </aside>
         </div>
       </section>
 
@@ -184,14 +218,14 @@
     <!-- ===== SHARED FOOTER (master copy: _template.html) ===== -->
     <footer class="site-footer">
       <div class="container">
-        <p>
-          COS30045 Data Visualisation · Swinburne University of Technology Vietnam · Team
-          MienTayDuo: Tran Quang Huy (106212636) and Chung Hien Thong (106212681) · 2026
-        </p>
-        <p>
-          Data: BITRE (2023) hospitalised injury, 2011–2021; ABS (2026) population, June 2021.
-          Sources and limits: <a href="about.html">About the data</a>.
-        </p>
+        <div>
+          <p>
+            COS30045 Data Visualisation · Swinburne University of Technology Vietnam · Team
+            MienTayDuo: Tran Quang Huy (106212636) and Chung Hien Thong (106212681) · 2026
+          </p>
+          <p>Data: BITRE (2023) hospitalised injury, 2011–2021; ABS (2026) population, June 2021.</p>
+        </div>
+        <a class="footer-link" href="about.html">Methods and sources →</a>
       </div>
     </footer>
 

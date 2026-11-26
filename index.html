@@ -15,7 +15,7 @@
       name="description"
       content="Pedestrians are a small share of road-injury hospital admissions in Australia but a much larger share of hospital bed days. A data story with D3 charts, BITRE data 2011–2021."
     />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23eb6834'/%3E%3C/svg%3E" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%232167ab'/%3E%3C/svg%3E" />
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/visualisation.css" />
   </head>
@@ -26,7 +26,7 @@
     <!-- ===== SHARED HEADER (master copy: _template.html) ===== -->
     <header class="site-header">
       <div class="container header-inner">
-        <a class="brand" href="index.html">Few cases, long stays</a>
+        <a class="brand" href="index.html">MienTayDuo <span>· Few cases, long stays</span></a>
         <!-- A11Y: below 1024 px the menu button shows and hides the whole navigation -->
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav-list">
           Menu
@@ -67,17 +67,27 @@
         <div class="container">
           <p class="eyebrow">Pedestrian road injuries in Australia, 2011–2021</p>
           <h1 id="hero-title">The hidden hospital burden of pedestrian injuries</h1>
-          <p class="hero-figure">
-            <span class="hero-number" data-stat="beds_per_day">…</span>
-            <span class="hero-label"
-              >hospital beds filled by injured pedestrians on an average day in 2021</span
-            >
-          </p>
           <p class="lead">
             Pedestrians are only a small share of the people admitted to hospital after road
             crashes. But they stay much longer than most, and that is easy to miss if we only
             count cases.
           </p>
+          <div class="hero-evidence">
+            <div class="metric metric--orange">
+              <div>
+                <p class="metric-label">Hospital beds filled by injured pedestrians</p>
+                <p class="metric-figure">
+                  <span class="metric-value" data-stat="beds_per_day">…</span>
+                  <span class="metric-unit">on an average day in 2021</span>
+                </p>
+              </div>
+            </div>
+            <div class="question-card">
+              <p class="card-label">The question</p>
+              <h2>Why do so few cases fill so many beds?</h2>
+              <p>The big picture shows the gap; the four stories explain it.</p>
+            </div>
+          </div>
           <a class="cta" href="big-picture.html">Start with the big picture →</a>
         </div>
       </section>
@@ -88,19 +98,22 @@
           <h2 id="kpi-title">2021 in three numbers</h2>
           <ul class="kpi-row">
             <li class="kpi">
-              <span class="kpi-value kpi-value--blue" data-stat="ped_adm_share_2021">…</span>
+              <span class="metric-label">Admissions</span>
+              <span class="kpi-value" data-stat="ped_adm_share_2021">…</span>
               <span class="kpi-label">of road-injury admissions were pedestrians</span>
             </li>
-            <li class="kpi">
-              <span class="kpi-value kpi-value--orange" data-stat="ped_bed_share_2021">…</span>
+            <li class="kpi kpi--orange">
+              <span class="metric-label">Bed days</span>
+              <span class="kpi-value" data-stat="ped_bed_share_2021">…</span>
               <span class="kpi-label">of road-injury bed days were pedestrians'</span>
             </li>
-            <li class="kpi">
+            <li class="kpi kpi--grey">
+              <span class="metric-label">Days per case</span>
               <span class="kpi-value"
                 ><span data-stat="ped_bdpc_2021">…</span> vs
                 <span data-stat="all_bdpc_2021">…</span></span
               >
-              <span class="kpi-label">days per case, pedestrians vs all road injuries</span>
+              <span class="kpi-label">pedestrians vs all road injuries</span>
             </li>
           </ul>
         </div>
@@ -109,26 +122,28 @@
       <!-- ================= THE READER'S AGE GROUP (SPEC §3.0.4) ================= -->
       <section class="section section--compact" aria-labelledby="age-title">
         <div class="container">
-          <h2 id="age-title">Find your age group</h2>
-          <p>Choose your age group and the charts will mark it as you read.</p>
-          <div class="age-picker">
-            <!-- A11Y: native select with a visible label; options are filled from the shared age order -->
-            <label class="select-label" for="age-select">Your age group</label>
-            <select id="age-select"></select>
-            <button type="button" class="button-secondary" id="age-clear">Clear</button>
+          <div class="panel">
+            <h2 id="age-title">Find your age group</h2>
+            <p class="age-intro">Choose your age group and the charts will mark it as you read.</p>
+            <div class="age-picker">
+              <!-- A11Y: native select with a visible label; options are filled from the shared age order -->
+              <label class="select-label" for="age-select">Your age group</label>
+              <select id="age-select"></select>
+              <button type="button" class="button-secondary" id="age-clear">Clear</button>
+            </div>
+            <!-- A11Y: each change is announced politely, with a link to the story about that group -->
+            <p class="age-message" id="age-message" role="status" aria-live="polite"></p>
           </div>
-          <!-- A11Y: each change is announced politely, with a link to the story about that group -->
-          <p class="age-message" id="age-message" role="status" aria-live="polite"></p>
         </div>
       </section>
 
       <!-- ================= STORY MAP ================= -->
-      <section class="section section--tint" aria-labelledby="map-title">
+      <section class="section" aria-labelledby="map-title">
         <div class="container">
           <h2 id="map-title">
             Where do the <span data-stat="beds_per_day">…</span> beds come from?
           </h2>
-          <div class="formula-card">
+          <div class="insight formula-card">
             <p class="formula">Bed days = number of cases × days per case</p>
             <p>
               Two things make the burden large: each stay is long, and there are many cases. Each
@@ -199,14 +214,14 @@
     <!-- ===== SHARED FOOTER (master copy: _template.html) ===== -->
     <footer class="site-footer">
       <div class="container">
-        <p>
-          COS30045 Data Visualisation · Swinburne University of Technology Vietnam · Team
-          MienTayDuo: Tran Quang Huy (106212636) and Chung Hien Thong (106212681) · 2026
-        </p>
-        <p>
-          Data: BITRE (2023) hospitalised injury, 2011–2021; ABS (2026) population, June 2021.
-          Sources and limits: <a href="about.html">About the data</a>.
-        </p>
+        <div>
+          <p>
+            COS30045 Data Visualisation · Swinburne University of Technology Vietnam · Team
+            MienTayDuo: Tran Quang Huy (106212636) and Chung Hien Thong (106212681) · 2026
+          </p>
+          <p>Data: BITRE (2023) hospitalised injury, 2011–2021; ABS (2026) population, June 2021.</p>
+        </div>
+        <a class="footer-link" href="about.html">Methods and sources →</a>
       </div>
     </footer>
 

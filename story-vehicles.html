@@ -15,7 +15,7 @@
       name="description"
       content="Pedestrians hit by a truck, bus or train stay in hospital far longer than those hit by a car, ute or van (Australia, 2016–2021)."
     />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23eb6834'/%3E%3C/svg%3E" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%232167ab'/%3E%3C/svg%3E" />
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/visualisation.css" />
   </head>
@@ -26,7 +26,7 @@
     <!-- ===== SHARED HEADER (master copy: _template.html) ===== -->
     <header class="site-header">
       <div class="container header-inner">
-        <a class="brand" href="index.html">Few cases, long stays</a>
+        <a class="brand" href="index.html">MienTayDuo <span>· Few cases, long stays</span></a>
         <!-- A11Y: below 1024 px the menu button shows and hides the whole navigation -->
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav-list">
           Menu
@@ -64,38 +64,50 @@
     <main id="main">
       <div class="breadcrumb" data-breadcrumb></div>
 
-      <article class="section story-page" aria-labelledby="page-title">
-        <div class="container story story--reverse">
-          <div class="story-text">
-            <p class="story-kicker">Part A · Story 2 · Heavier vehicles</p>
-            <h1 id="page-title">The heavier the vehicle, the longer the stay</h1>
-            <p>
-              Between 2016 and 2021, a pedestrian hit by a car, ute or van stayed
-              <span data-stat="bdpc_car">…</span> days per admission. One hit by a truck or bus
-              stayed <span data-stat="bdpc_truck">…</span> days, and one hit by a train
-              <span data-stat="bdpc_train">…</span>. Trucks and buses caused only
-              <span data-stat="truck_case_share">…</span> of pedestrian admissions but
-              <span data-stat="truck_bed_share">…</span> of their bed days. Choose an age group: the
-              pattern holds in each one.
-            </p>
-            <!-- A11Y: shows the reader's age group (filled by interactions.js); a status region, so Clear is announced -->
-            <p class="age-status" data-age-status role="status" hidden></p>
-            <aside class="response" aria-labelledby="response-title">
-              <h2 id="response-title">What can be done</h2>
-              <p>
-                Reduce crash energy. For trucks on city streets, that means blind-spot systems, side
-                underrun protection and automatic emergency braking, which Australia's Safer Freight
-                Vehicles package encourages (DITRDCA, 2023). For cars, which cause
-                <span data-stat="car_case_share">…</span> of cases, it means lower speeds where people
-                walk: the risk of death rises steeply with impact speed (Hussain et al., 2019).
-              </p>
-            </aside>
+      <article class="story-page" aria-labelledby="page-title">
+        <div class="container">
+          <p class="eyebrow">Part A / Story 2</p>
+          <h1 id="page-title">The heavier the vehicle, the longer the stay</h1>
+          <p class="lead">
+            Between 2016 and 2021, a pedestrian hit by a car, ute or van stayed
+            <span data-stat="bdpc_car">…</span> days per admission. One hit by a train stayed
+            <span data-stat="bdpc_train">…</span>. Choose an age group in the chart: the pattern holds
+            in each one.
+          </p>
+          <!-- A11Y: shows the reader's age group (filled by interactions.js); a status region, so Clear is announced -->
+          <p class="age-status" data-age-status role="status" hidden></p>
+
+          <div class="hero-evidence">
+            <div class="metric metric--orange">
+              <div>
+                <p class="metric-label">Days per admission, hit by a truck or bus</p>
+                <p class="metric-figure">
+                  <span class="metric-value" data-stat="bdpc_truck">…</span>
+                  <span class="metric-unit">/ <span data-stat="bdpc_car">…</span> for a car, ute or van</span>
+                </p>
+              </div>
+              <p class="metric-delta"><span data-stat="truck_car_ratio">…</span>×</p>
+            </div>
+            <div class="question-card">
+              <p class="card-label">The question</p>
+              <h2>Do trucks and buses cause many of the cases?</h2>
+              <p>Switch the chart below to "Share of cases vs bed days" to check.</p>
+            </div>
           </div>
 
-          <figure class="chart-figure story-figure" aria-labelledby="chart-d-title">
-            <h2 id="chart-d-title" class="chart-title">
-              Trucks, buses and trains mean the longest stays
-            </h2>
+          <figure class="chart-figure" aria-labelledby="chart-d-title">
+            <div class="panel-head">
+              <h2 id="chart-d-title" class="chart-title">
+                Trucks, buses and trains mean the longest stays
+              </h2>
+              <!-- A11Y: toggle buttons use real buttons with aria-pressed -->
+              <div class="segmented" role="group" aria-label="Measure" id="toggle-d">
+                <button type="button" data-value="perCase" aria-pressed="true">Days per case</button>
+                <button type="button" data-value="share" aria-pressed="false">
+                  Share of cases vs bed days
+                </button>
+              </div>
+            </div>
             <p class="chart-subtitle" id="chart-d-subtitle">
               Average bed days per pedestrian admission by the vehicle that hit them, 2016–2021 · All
               ages
@@ -104,28 +116,45 @@
               <!-- A11Y: native select with a visible label -->
               <label class="select-label" for="select-d">Age group</label>
               <select id="select-d"></select>
-              <!-- A11Y: segmented toggle uses real buttons with aria-pressed -->
-              <div class="segmented" role="group" aria-label="Measure" id="toggle-d">
-                <button type="button" data-value="perCase" aria-pressed="true">Days per case</button>
-                <button type="button" data-value="share" aria-pressed="false">
-                  Share of cases vs bed days
-                </button>
-              </div>
             </div>
+            <ul class="legend" id="legend-d-days" aria-label="Legend">
+              <li><span class="swatch swatch--orange"></span>Bed days per admission</li>
+              <li class="legend-reference">n = number of admissions</li>
+            </ul>
             <ul class="legend" id="legend-d" aria-label="Legend" hidden>
               <li><span class="swatch swatch--blue"></span>Share of pedestrian admissions</li>
               <li><span class="swatch swatch--orange"></span>Share of pedestrian bed days</li>
             </ul>
+            <!-- A11Y: the reading box says what the chart shows now; announced when a control changes it -->
+            <p class="chart-reading" id="reading-d" aria-live="polite"></p>
             <div class="chart" id="chart-d"></div>
-            <p class="chart-note">
-              Vehicles are ordered from lightest to heaviest. Other and unspecified vehicles are not
-              shown. Groups with fewer than 20 admissions are not shown.
-            </p>
+            <div class="chart-captions">
+              <p class="chart-note">
+                Vehicles are ordered from lightest to heaviest. Other and unspecified vehicles are not
+                shown. Groups with fewer than 20 admissions are not shown.
+              </p>
+            </div>
             <details class="data-table">
               <summary>Show data table</summary>
               <div class="table-wrap" id="table-d"></div>
             </details>
+            <p class="data-links">
+              Download the data:
+              <a href="data/vehicle_2016_2021.csv">vehicles, all ages (CSV)</a> ·
+              <a href="data/vehicle_by_age_2016_2021.csv">vehicles by age group (CSV)</a>.
+            </p>
           </figure>
+
+          <aside class="insight" aria-labelledby="response-title">
+            <h2 id="response-title">What can be done</h2>
+            <p>
+              Reduce crash energy. For trucks on city streets, that means blind-spot systems, side
+              underrun protection and automatic emergency braking, which Australia's Safer Freight
+              Vehicles package encourages (DITRDCA, 2023). For cars, which cause
+              <span data-stat="car_case_share">…</span> of cases, it means lower speeds where people
+              walk: the risk of death rises steeply with impact speed (Hussain et al., 2019).
+            </p>
+          </aside>
         </div>
       </article>
 
@@ -135,14 +164,14 @@
     <!-- ===== SHARED FOOTER (master copy: _template.html) ===== -->
     <footer class="site-footer">
       <div class="container">
-        <p>
-          COS30045 Data Visualisation · Swinburne University of Technology Vietnam · Team
-          MienTayDuo: Tran Quang Huy (106212636) and Chung Hien Thong (106212681) · 2026
-        </p>
-        <p>
-          Data: BITRE (2023) hospitalised injury, 2011–2021; ABS (2026) population, June 2021.
-          Sources and limits: <a href="about.html">About the data</a>.
-        </p>
+        <div>
+          <p>
+            COS30045 Data Visualisation · Swinburne University of Technology Vietnam · Team
+            MienTayDuo: Tran Quang Huy (106212636) and Chung Hien Thong (106212681) · 2026
+          </p>
+          <p>Data: BITRE (2023) hospitalised injury, 2011–2021; ABS (2026) population, June 2021.</p>
+        </div>
+        <a class="footer-link" href="about.html">Methods and sources →</a>
       </div>
     </footer>
 

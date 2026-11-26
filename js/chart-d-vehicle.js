@@ -54,6 +54,17 @@ const vehicleRowsFor = (ageGroup) => {
   });
 };
 
+// One sentence for the reading box above the chart: trucks and buses against cars for the chosen age group
+const readingD = (share, ageText, truck, car) => {
+  if (!truck || !truck.shown) return `${ageText}: fewer than 20 pedestrians hit by a truck or bus, so no comparison is shown.`;
+  if (share) {
+    return `${ageText}: trucks and buses caused ${formatters.pct1(truck.caseShare)} of pedestrian admissions but ${formatters.pct1(truck.bedShare)} of their bed days.`;
+  }
+  const days = `${ageText}: a pedestrian hit by a truck or bus stayed ${formatters.dec1(truck.perCase)} days per admission`;
+  if (!car || !car.shown) return `${days}.`;
+  return `${days}, ${formatters.ratio1(truck.perCase / car.perCase)} times as long as one hit by a car, ute or van (${formatters.dec1(car.perCase)}).`;
+};
+
 const drawChartD = () => {
   const size = getChartSize("chart-d", "d");
   const truck = vehicleRowsFor(ALL_AGES).find((d) => d.key === "Heavy transport vehicle or bus");
@@ -239,6 +250,8 @@ const updateChartD = (instant = false, atBaseline = false) => {
   const ageText = ageGroup === ALL_AGES ? ALL_AGES : AGE_LABELS[ageGroup];
   d3.select("#chart-d-subtitle").text(`${measure.subtitle} · ${ageText}`);
   d3.select("#legend-d").attr("hidden", share ? null : true); // the colours need a key only in the share view
+  d3.select("#legend-d-days").attr("hidden", share ? true : null);
+  d3.select("#reading-d").text(readingD(share, ageText, truck, car));
 
   // One focusable row per vehicle with a tooltip for the current measure
   const hits = inner

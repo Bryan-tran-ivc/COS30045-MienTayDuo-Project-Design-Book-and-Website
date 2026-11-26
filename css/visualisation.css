@@ -1,61 +1,114 @@
 /* File: css/visualisation.css
- * Purpose: Styles shared by all six D3 charts: figures, legends, axes, marks, labels, reference lines, tooltip,
- *          messages and data tables (SPEC.md §4.0).
+ * Purpose: Styles shared by all six D3 charts: the chart panel (title, period line, controls, legend row, reading
+ *          box, caption, data table, data links), axes, marks, labels, reference lines, tooltip and messages
+ *          (SPEC.md §4.0). Follows the team's shared panel design (Huy's page prototype).
  * Project: COS30045 · Team MienTayDuo · "Few cases, long stays"
  */
 
+/* The chart panel: a white card like .panel in base.css */
 .chart-figure {
-  margin: 0;
+  margin: 26px 0 0;
   background: var(--card);
-  border: 1px solid var(--grid);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 20px 20px 14px;
+  padding: clamp(1rem, 3vw, 2.25rem);
+  box-shadow: var(--shadow);
 }
 .chart-title {
-  font-size: 19px;
-  margin-bottom: 2px;
+  font-size: 1.2rem;
+  margin: 0;
 }
+/* Measure · group · years, under the title */
 .chart-subtitle {
   color: var(--ink-2);
-  font-size: 14px;
-  margin: 0 0 6px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin: 0.4rem 0 0.75rem;
 }
 .chart {
   position: relative;
   width: 100%;
   min-height: 120px;
+  margin-top: 12px;
+  padding-top: 22px;
+  border-top: 1px solid #eef1f4;
 }
 .chart svg {
   display: block;
   overflow: visible;
 }
-.chart-note {
-  color: var(--ink-2);
-  font-size: 13px;
-  margin: 6px 0 0;
+
+/* Reading box: one sentence that says what the chart shows in its current state (Huy's annotation box) */
+.chart-reading {
+  margin: 12px 0 4px;
+  padding: 0.7rem 1rem;
+  border-inline-start: 3px solid var(--blue);
+  background: var(--wash);
+  color: var(--ink);
+  font-size: 0.91rem;
+  font-weight: 560;
+  line-height: 1.55;
+}
+.chart-reading:empty {
+  display: none;
 }
 
-/* Legend (HTML, so it wraps on small screens) */
+/* Captions under the plot: how to read and use it */
+.chart-note {
+  color: var(--ink-2);
+  font-size: 0.86rem;
+  line-height: 1.65;
+  margin: 0;
+}
+.chart-captions {
+  border-top: 1px solid var(--border);
+  padding-top: 15px;
+  margin-top: 12px;
+}
+.chart-captions .chart-note {
+  border: 0;
+  padding: 0;
+  margin: 0 0 4px;
+}
+.data-links {
+  color: var(--ink-2);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin: 1rem 0 0;
+}
+.data-links a {
+  text-decoration: underline;
+}
+
+/* Legend row (HTML, so it wraps on small screens): swatches on the left, the reference-line key on the right */
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 18px;
+  align-items: center;
+  gap: 8px 16px;
   list-style: none;
   padding: 0;
-  margin: 6px 0 4px;
-  font-size: 13px;
-  color: var(--ink-2);
+  margin: 15px 0 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #3f4b57;
 }
 .legend li {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+}
+.legend .legend-reference {
+  margin-left: auto;
+  font-weight: 400;
+  color: var(--ink-2);
 }
 .swatch {
   display: inline-block;
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
+  flex: 0 0 0.68rem;
+  width: 0.68rem;
+  height: 0.68rem;
+  border-radius: 2px;
 }
 .swatch--blue {
   background: var(--blue);
@@ -78,12 +131,14 @@
 }
 .swatch--ref {
   height: 0;
+  flex-basis: 22px;
   width: 22px;
   border-radius: 0;
   border-top: 1.5px solid var(--ink-2);
 }
 .swatch--orange-dashed {
   height: 0;
+  flex-basis: 22px;
   width: 22px;
   border-radius: 0;
   border-top: 2.5px dashed var(--orange);
@@ -94,9 +149,10 @@
   font-family: var(--font);
   font-size: 12px;
   fill: var(--ink-2);
+  font-variant-numeric: tabular-nums;
 }
 .axis .domain {
-  stroke: var(--border);
+  stroke: #c9d2da;
 }
 .axis .tick line {
   stroke: var(--grid);
@@ -112,7 +168,7 @@
   fill: var(--ink-2);
 }
 
-/* Labels: a halo in the surface colour keeps text readable where it crosses a line */
+/* Labels: a halo in the card colour keeps text readable where it crosses a line */
 .chart-label,
 .value-label,
 .annotation,
@@ -122,10 +178,14 @@
   font-family: var(--font);
   font-size: 12px;
   fill: var(--ink);
+  font-variant-numeric: tabular-nums;
   paint-order: stroke;
   stroke: var(--card);
   stroke-width: 3px;
   stroke-linejoin: round;
+}
+.value-label {
+  font-weight: 600;
 }
 .annotation {
   font-weight: 700;
@@ -140,8 +200,9 @@
   font-style: italic;
 }
 .ref-line {
-  stroke: var(--ink-2);
+  stroke: #52616a;
   stroke-width: 1;
+  stroke-dasharray: 4 4;
 }
 .break-line {
   stroke: var(--grey);
@@ -190,7 +251,7 @@
 }
 .chart [tabindex]:focus-visible {
   outline: 2px solid var(--focus);
-  outline-offset: 1px;
+  outline-offset: 3px;
 }
 .chart .hit:focus-visible {
   stroke: var(--focus);
@@ -199,30 +260,30 @@
 
 /* Message shown inside a figure when its data cannot be loaded */
 .chart-message {
-  padding: 24px;
-  background: var(--surface-2);
+  padding: 12px;
+  background: #fff0ec;
   border-radius: 8px;
-  color: var(--ink);
-  font-size: 15px;
+  color: #76290f;
+  font-size: 0.95rem;
 }
 
 /* Tooltip (one for the whole page) */
 .tooltip {
   position: fixed;
   z-index: 60;
-  max-width: 280px;
-  padding: 10px 12px;
-  background: var(--ink);
+  max-width: min(22rem, calc(100vw - 24px));
+  padding: 0.65rem 0.85rem;
+  background: #111827;
   color: #fff;
-  border-radius: 8px;
-  font-size: 13px;
-  line-height: 1.45;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
   pointer-events: none;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 4px 16px #11182733;
 }
 .tooltip strong {
   display: block;
-  font-size: 14px;
+  font-size: 0.92rem;
   margin-bottom: 2px;
 }
 .tooltip .tt-swatch {
@@ -231,44 +292,59 @@
   height: 9px;
   border-radius: 2px;
   margin-right: 6px;
+  box-shadow: 0 0 0 1px #ffffff66;
 }
 
 /* Data tables (A11Y: the same numbers as the chart, readable by screen readers) */
 .data-table {
-  margin-top: 10px;
-  font-size: 14px;
+  margin-top: 14px;
+  padding: 15px 0 0;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
 }
 .data-table summary {
   cursor: pointer;
-  color: var(--blue-dark);
-  font-weight: 600;
-  padding: 4px 0;
+  color: #3f4b57;
+  font-size: 0.88rem;
+  font-weight: 650;
+  padding-block: 0.35rem;
+}
+.data-table[open] > summary {
+  color: var(--blue);
+}
+@media (hover: hover) {
+  .data-table summary:hover {
+    text-decoration: underline;
+  }
 }
 .table-wrap {
   overflow-x: auto;
+  margin-top: 0.65rem;
 }
 .data-table table {
   border-collapse: collapse;
   width: 100%;
-  margin-top: 8px;
   font-variant-numeric: tabular-nums;
 }
 .data-table caption {
   text-align: left;
   color: var(--ink-2);
-  font-size: 13px;
+  font-size: 0.82rem;
   padding-bottom: 6px;
 }
 .data-table th,
 .data-table td {
-  padding: 6px 8px;
-  border-bottom: 1px solid var(--grid);
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
   text-align: left;
   vertical-align: top;
 }
-.data-table th {
-  font-weight: 600;
-  background: var(--surface-2);
+.data-table thead th {
+  font-weight: 650;
+  background: var(--wash);
+}
+.data-table tbody tr:hover {
+  background: #fafbfc;
 }
 .data-table td.num,
 .data-table th.num {
@@ -276,7 +352,8 @@
 }
 
 @media (max-width: 767px) {
-  .chart-figure {
-    padding: 14px 12px 10px;
+  .legend .legend-reference {
+    margin-left: 0;
+    width: 100%;
   }
 }

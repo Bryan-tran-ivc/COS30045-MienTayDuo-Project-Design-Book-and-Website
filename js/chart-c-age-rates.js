@@ -13,6 +13,7 @@ const MEASURES_C = {
     format: formatters.dec0,
     allAges: () => chartData.derived.allAgesBedDayRate,
     unit: "bed days per 100,000 people",
+    legend: "Bed days per 100,000 people",
     subtitle: "Pedestrian bed days per 100,000 people, 2021",
   },
   admissions: {
@@ -21,8 +22,22 @@ const MEASURES_C = {
     format: formatters.dec1,
     allAges: () => chartData.derived.allAgesAdmissionRate,
     unit: "admissions per 100,000 people",
+    legend: "Admissions per 100,000 people",
     subtitle: "Pedestrian admissions per 100,000 people, 2021",
   },
+};
+
+// One sentence for the reading box above the chart: the 75+ rate against all ages, and the reader's own group
+const readingC = (measure, rows, allAges) => {
+  const valueFor = (age) => rows.find((d) => d["Age group"] === age)?.[measure.column];
+  const oldest = valueFor("75+");
+  if (oldest === undefined) return "";
+  let text = `Aged 75+: ${measure.format(oldest)} ${measure.unit}, ${formatters.ratio1(oldest / allAges)} times the all-ages rate of ${measure.format(allAges)}.`;
+  const own = siteState.ageGroup;
+  if (own && own !== "75+" && valueFor(own) !== undefined) {
+    text += ` Your age group (${AGE_LABELS[own]}): ${measure.format(valueFor(own))}.`;
+  }
+  return text;
 };
 
 const drawChartC = () => {
@@ -197,6 +212,9 @@ const updateChartC = (instant = false, atBaseline = false) => {
     .style("fill", (age) => (age === ageGroup ? COLORS.ink : null));
 
   d3.select("#chart-c-subtitle").text(measure.subtitle);
+  d3.select("#swatch-c").style("background", measure.color);
+  d3.select("#legend-c-label").text(measure.legend);
+  d3.select("#reading-c").text(readingC(measure, rows, allAges));
 
   // Focusable hit areas (one per bar column) with tooltips for the current measure.
   // A11Y: kept in the on-screen order (sort + .order()), so Tab moves left to right also after sorting
