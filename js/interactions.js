@@ -1,9 +1,10 @@
 /* File: js/interactions.js
  * Purpose: Connects the page's controls to the charts (chart A checkbox, chart C and E toggles, chart D select),
- *          runs the shared navigation (menu button below 1024 px, the Part A / Part B story lists), Escape to close
- *          the tooltip, a story list or the menu, and redraws the charts on this page when the window width changes
- *          (SPEC.md §3.0.1 and §4). It also keeps the reader's age group (SPEC §3.0.4): the Home picker, the status
- *          line on chart pages, ?age= in the URL and links, localStorage, and the "agechange" event.
+ *          runs the shared navigation (the Part A / Part B story lists) and the header's reading settings (larger
+ *          text, higher contrast, reduce motion; from Huy's prototype), Escape to close the tooltip or a story list,
+ *          and redraws the charts on this page when the window width changes (SPEC.md §3.0.1 and §4). It also keeps
+ *          the reader's age group (SPEC §3.0.4): the Home picker, the status line on chart pages, ?age= in the URL
+ *          and links, localStorage, and the "agechange" event.
  *          Every page loads this file; each part does nothing if its elements are absent.
  * Project: COS30045 · Team MienTayDuo · "Few cases, long stays"
  */
@@ -18,7 +19,7 @@ const initChartControls = () => {
 
   // Chart A: legend buttons highlight one series; pressing the highlighted one again shows both (task 2.2)
   // A11Y: real <button>s with aria-pressed (kept in step by highlightSeriesA)
-  d3.selectAll("#legend-a .legend-button").on("click", function () {
+  d3.selectAll("#legend-a button").on("click", function () {
     const series = this.dataset.series;
     chartState.a.highlight = chartState.a.highlight === series ? null : series;
     if (drawnCharts.has("a")) highlightSeriesA();
@@ -65,21 +66,12 @@ const initChartControls = () => {
   });
 };
 
-// ---------- Navigation: menu button and the two part lists (SPEC §3.0.1) ----------
-// Returns a function that closes whatever is open (used by the Escape handler), or null if the page has no nav.
+// ---------- Navigation: the two part lists (SPEC §3.0.1) ----------
+// The nav row wraps on narrow screens (as in the shared design), so there is no menu button. Returns a function that
+// closes an open part list (used by the Escape handler), or null if the page has no nav.
 const initNavigation = () => {
-  const menuButton = document.querySelector(".menu-button");
   const nav = document.querySelector(".site-nav");
-  if (!menuButton || !nav) return null;
-
-  // A11Y: aria-expanded on the menu button reflects whether the nav list is shown (below 1024 px)
-  const setMenu = (open) => {
-    nav.classList.toggle("is-open", open);
-    menuButton.setAttribute("aria-expanded", String(open));
-    if (!open) closeGroups(); // a part list never stays "expanded" inside a closed menu
-  };
-  menuButton.addEventListener("click", () => setMenu(!nav.classList.contains("is-open")));
-  nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setMenu(false)));
+  if (!nav) return null;
 
   // A11Y: each part button is a disclosure button; aria-expanded says whether its list of stories is open.
   // Only one list is open at a time. A list closes when focus or a click goes somewhere outside its group.
@@ -100,29 +92,107 @@ const initNavigation = () => {
     });
   });
   document.addEventListener("click", (event) => {
-    if (!nav.contains(event.target) && event.target !== menuButton) closeGroups();
+    if (!nav.contains(event.target)) closeGroups();
   });
 
-  // Escape closes the innermost open thing first: a part list (focus back to its button), then the menu
+  // Escape closes an open part list and returns focus to its button
   return () => {
     const openButton = groupButtons.find(isOpen);
-    if (openButton) {
-      setGroup(openButton, false);
-      openButton.focus();
-      return true;
-    }
-    if (nav.classList.contains("is-open")) {
-      setMenu(false);
-      menuButton.focus();
-      return true;
-    }
-    return false;
+    if (!openButton) return false;
+    setGroup(openButton, false);
+    openButton.focus();
+    return true;
   };
+};
+
+// ---------- Reading settings in the header (from Huy's page prototype) ----------
+// A11Y: native checkboxes for larger text, higher contrast and reduced motion; the panel is nonmodal, Escape closes it
+// and returns focus to the icon. Settings are kept in this browser when storage is available.
+const initAccessibility = () => {
+  const trigger = document.getElementById("access-trigger");
+  const panel = document.getElementById("access-panel");
+  if (!trigger || !panel) return;
+  const settings = {
+    large: document.getElementById("access-large"),
+    contrast: document.getElementById("access-contrast"),
+    motion: document.getElementById("access-motion"),
+  };
+  const apply = (announce = true) => {
+    document.body.classList.toggle("large-text", settings.large.checked);
+    document.body.classList.toggle("high-contrast", settings.contrast.checked);
+    document.body.classList.toggle("reduce-motion", settings.motion.checked);
+    if (settings.motion.checked) window.dispatchEvent(new Event("mtd-reduced-motion"));
+    try {
+      const stored = Object.fromEntries(Object.entries(settings).map(([key, input]) => [key, input.checked]));
+      localStorage.setItem("mtd-accessibility", JSON.stringify(stored));
+    } catch (error) {
+      // Storage can be disabled in private browsing; the settings still apply to this page
+    }
+    if (announce) document.getElementById("access-status").textContent = "Reading preferences updated.";
+  };
+  try {
+    const stored = JSON.parse(localStorage.getItem("mtd-accessibility") || "{}");
+    Object.entries(settings).forEach(([key, input]) => (input.checked = !!stored[key]));
+  } catch (error) {
+    // Use the defaults when storage is unavailable
+  }
+  apply(false);
+
+  const close = (returnFocus = false) => {
+    panel.hidden = true;
+    trigger.setAttribute("aria-expanded", "false");
+    if (returnFocus) trigger.focus();
+  };
+  trigger.addEventListener("click", () => {
+    const opening = panel.hidden;
+    panel.hidden = !opening;
+    trigger.setAttribute("aria-expanded", String(opening));
+    if (opening) {
+      trigger.classList.remove("tooltip-dismissed");
+      settings.large.focus();
+    } else {
+      trigger.focus();
+    }
+  });
+  document.getElementById("access-close").addEventListener("click", () => close(true));
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    if (!panel.hidden) {
+      event.preventDefault();
+      close(true);
+    } else if (document.activeElement === trigger) {
+      event.preventDefault();
+      trigger.classList.add("tooltip-dismissed");
+    }
+  });
+  trigger.addEventListener("blur", () => trigger.classList.remove("tooltip-dismissed"));
+  trigger.addEventListener("pointerleave", () => trigger.classList.remove("tooltip-dismissed"));
+  document.addEventListener("pointerdown", (event) => {
+    if (!panel.hidden && !panel.contains(event.target) && !trigger.contains(event.target)) close();
+  });
+  document.addEventListener("focusin", (event) => {
+    if (!panel.hidden && !panel.contains(event.target) && !trigger.contains(event.target)) close();
+  });
+  Object.values(settings).forEach((input) => input.addEventListener("change", () => apply()));
+  document.getElementById("access-reset").addEventListener("click", () => {
+    Object.values(settings).forEach((input) => (input.checked = false));
+    apply();
+    settings.large.focus();
+  });
+  // Opens the first chart's data table on this page
+  document.getElementById("access-table").addEventListener("click", () => {
+    const details = document.querySelector(".panel details");
+    if (!details) return;
+    details.open = true;
+    close();
+    details.querySelector("summary").focus();
+    details.scrollIntoView({ block: "nearest", behavior: "auto" });
+  });
 };
 
 // ---------- Tooltip housekeeping ----------
 const initTooltipHandling = (closeNavigation) => {
-  // A11Y: Escape hides the tooltip, then closes an open story list or the menu
+  // A11Y: Escape hides the tooltip, then closes an open story list
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
     hideTooltip();
@@ -342,4 +412,5 @@ const initInteractions = () => {
 // The navigation, Escape key and age group work as soon as the page is parsed (scripts sit at the end of <body>),
 // without waiting for the data, so a slow or failed CSV never blocks them.
 initTooltipHandling(initNavigation());
+initAccessibility();
 initAgeGroup();

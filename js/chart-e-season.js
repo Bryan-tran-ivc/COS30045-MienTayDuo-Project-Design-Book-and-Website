@@ -134,7 +134,7 @@ const drawSeasonAverage = (group, atBaseline) => {
     const change = winter.ped_index - 100;
     group
       .append("text")
-      .attr("class", "annotation season-note")
+      .attr("class", "chart-annotation season-note")
       .attr("x", x0("Winter") + x1("ped_index") + x1.bandwidth() / 2)
       .attr("y", y(winter.ped_index) - 8)
       .attr("text-anchor", "middle")
@@ -231,7 +231,7 @@ const drawSeasonByYear = (group) => {
   const higher = rows.filter((d) => d.winter > d.summer).length;
   group
     .append("text")
-    .attr("class", "annotation")
+    .attr("class", "chart-annotation")
     .attr("x", 0)
     .attr("y", size.innerHeight + 14)
     .text(higher === rows.length ? `Winter above summer in all ${rows.length} years` : `Winter above summer in ${higher} of ${rows.length} years`);

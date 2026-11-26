@@ -71,7 +71,7 @@ const drawChartC = () => {
   ref.append("line").attr("class", "ref-line").attr("x1", 0).attr("x2", size.innerWidth);
   ref.append("line").attr("class", "ref-line ref-sample"); // short line sample next to the label on phones
   ref.append("text").attr("class", "ref-label");
-  inner.append("text").attr("class", "annotation annotation-75");
+  inner.append("text").attr("class", "chart-annotation annotation-75");
   inner.append("g").attr("class", "hits");
 
   if (revealed.c) {

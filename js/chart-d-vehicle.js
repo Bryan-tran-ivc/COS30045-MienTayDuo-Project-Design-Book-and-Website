@@ -117,7 +117,7 @@ const drawChartD = () => {
 
   inner.append("g").attr("class", "bars");
   inner.append("g").attr("class", "labels");
-  inner.append("text").attr("class", "annotation annotation-truck");
+  inner.append("text").attr("class", "chart-annotation annotation-truck");
   inner.append("g").attr("class", "hits");
 
   populateSelectD();

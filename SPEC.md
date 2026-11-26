@@ -1,7 +1,7 @@
 # SPEC — "Few cases, long stays" website
 
 COS30045 Data Visualisation · Team MienTayDuo · Tran Quang Huy (106212636), Chung Hien Thong (106212681)
-Version 2.1 (Week 13, 26 November 2026): every page uses the shared design system in §5. Version 2.0 (Week 13, 26 November 2026): the single page becomes a site of eight pages. Version 1.0 (Week 12, 25 November 2026) was the single scrolling page, tagged `v0.1-single-page`. This file is the single source of truth for the website. Read it fully before writing code. When the spec and the code disagree, change the code, or change the spec first and say why.
+Version 2.1 (Week 13, 26 November 2026): every page uses one design system, the team's shared stylesheet from Huy's page prototype (§5), including its header with the reading-settings button. Version 2.0 (Week 13, 26 November 2026): the single page becomes a site of eight pages. Version 1.0 (Week 12, 25 November 2026) was the single scrolling page, tagged `v0.1-single-page`. This file is the single source of truth for the website. Read it fully before writing code. When the spec and the code disagree, change the code, or change the spec first and say why.
 
 **Who writes which part of this spec (task 0.5):** Thông: §1, §3 (except §3.7.1 and §3.8.1), §4.A–D, §6, §7, §9. Huy: §4.E, §4.F, §3.7.1 (beds-freed calculator), §3.8.1 (glossary). Shared: §2, §4.0, §5, §8.
 
@@ -64,6 +64,7 @@ Sources: BITRE (2023) Hospitalised injury, national workbook (raw tab), Traffic 
 | All-ages pedestrian share | Σ`ped_admissions` / Σ`Hospitalisations` × 100 | 5.9% |
 | Share of pedestrian cases / bed days by age | `ped_admissions` / Σ`ped_admissions` (and bed days) | under 40: 51.2% / 34.1%; 65+: 22.2% / 36.2% |
 | Vehicle share of cases / bed days within one age group (chart D, v2.0) | vehicle's `Hospitalisations` (or `Bed days`) / Σ over every counterparty of that age group in `vehicle_by_age_2016_2021.csv` × 100. All ages uses `case_share_pct` / `bed_day_share_pct` from KNIME | 75+, truck or bus: 3.2% of cases / 4.4% of bed days |
+| Truck or bus vs car, days per admission (`truck_car_ratio`, Story 2 metric card, v2.1) | `bed_days_per_case` of "Heavy transport vehicle or bus" / that of "Car, pick-up truck or van" in `vehicle_2016_2021.csv` | 22.0 / 10.2 = 2.1 |
 
 Rounding: percentages 1 decimal place; rates 1 decimal for admissions, 0 decimals for bed days per 100,000; days per case 1 decimal; counts with thousands separators (`d3.format(",")`). Use the `formatters` object in `shared-constants.js`; never format inline.
 
@@ -78,7 +79,7 @@ Eight pages at the site root, each `lang="en-AU"`, in this reading order:
 
 | # | File | `data-page` | Page title (`h1`) | Content | Owner |
 |---|---|---|---|---|---|
-| 1 | `index.html` | `home` | The hidden hospital burden of pedestrian injuries | Hero, 3 KPI cards, story map, age picker | Thông |
+| 1 | `index.html` | `home` | The hidden hospital burden of pedestrian injuries | Opening, 3 key figures, age picker, story map | Thông |
 | 2 | `big-picture.html` | `big-picture` | The big picture | Chart A, then chart B (bridge) | Thông |
 | 3 | `story-older.html` | `story-older` | Older pedestrians carry the heaviest burden | Story 1 text, chart C, response | Thông |
 | 4 | `story-vehicles.html` | `story-vehicles` | The heavier the vehicle, the longer the stay | Story 2 text, chart D, response | Thông |
@@ -91,20 +92,18 @@ Every page: `<title>` is "{short page name} · Few cases, long stays" (Home: "Fe
 
 ### 3.0 Shared shell (every page)
 
-#### 3.0.1 Header and navigation (sticky; master copy in `_template.html`)
-There is no build step, so the header and footer are plain HTML **copied into each page**. `_template.html` holds the master copy: change it there, then paste the change into all eight pages in the same PR (Thông owns the shell).
-- Left: brand "Few cases, long stays", a link to `index.html`.
-- Nav `<nav class="site-nav" aria-label="Main">`, in this order: **Home** · **Big picture** · **Part A · Longer stays ▾** (Story 1 · Older people, Story 2 · Heavier vehicles) · **Part B · More cases ▾** (Story 3 · Winter, Story 4 · Children and young people) · **What can be done** · **About the data**.
-- The two parts are disclosure buttons (`<button aria-expanded aria-controls>`) that open a short list of their two stories. Wide screens: the list drops down under the button and closes on Escape (focus returns to the button), on a click outside, or when focus leaves the group. Only one part list is open at a time.
-- Current page: its link carries `aria-current="page"` in that page's copy of the header (so it works without JavaScript), shown with an orange underline. On a story page, the part button that contains it is underlined as well (class `is-current`).
-- Visible labels of the two part buttons: "A · Longer stays" and "B · More cases" (the same as the formula-card links); each part list has an `aria-label` with the full part question.
-- Below **1024 px** (the full row of eight entries does not fit narrower), the whole nav sits behind a "Menu" button (`aria-expanded`, `aria-controls`); the part lists open inline inside it. Escape closes the open part list first, then the menu. The navigation works before the data has loaded.
-- A "Skip to content" link is the first focusable element.
+#### 3.0.1 Header and navigation (master copy in `_template.html`)
+There is no build step, so the header and footer are plain HTML **copied into each page**. `_template.html` holds the master copy: change it there, then paste the change into all eight pages in the same PR (Thông owns the shell). The header is the one from Huy's page prototype (v2.1), so every page looks the same.
+- Row 1: brand "MienTayDuo · Few cases, long stays" (a link to `index.html`) on the left; the round **reading-settings button** on the right (`#access-trigger`, from Huy's prototype). It opens a nonmodal panel with three checkboxes (larger text, higher contrast, reduce motion), "Show chart data table" and "Reset settings"; Escape closes it and returns focus to the button. The settings are kept in `localStorage` (`mtd-accessibility`) when storage is available. "Reduce motion" also sets every D3 transition to 0 ms (`prefersReducedMotion()` in helpers.js).
+- Row 2: nav `<nav class="site-nav" aria-label="Main">`, in this order: **Home** · **Big picture** · **Part A · Longer stays ▾** (Story 1 · Older people, Story 2 · Heavier vehicles) · **Part B · More cases ▾** (Story 3 · Winter, Story 4 · Children and young people) · **What can be done** · **About the data**. On narrow screens the row wraps (no menu button), as in the shared design.
+- The two parts are disclosure buttons (`<button aria-expanded aria-controls>`) that open a short list of their two stories under the button (on phones the list spans the header width so it stays on screen). It closes on Escape (focus returns to the button), on a click outside, or when focus leaves the group. Only one part list is open at a time.
+- Current page: its link carries `aria-current="page"` in that page's copy of the header (so it works without JavaScript), shown with the `--wash` background and a blue underline. On a story page, the part button that contains it looks the same (class `is-current`).
+- Visible labels of the two part buttons: "A · Longer stays" and "B · More cases"; each part list has an `aria-label` with the full part question.
+- A "Skip to content" link (`.skip`) is the first focusable element. The header is not sticky.
 - No scroll-spy (v1.0 had one; each section is now a page).
 
 #### 3.0.2 Footer
-- "COS30045 Data Visualisation · Swinburne University of Technology Vietnam · Team MienTayDuo: Tran Quang Huy (106212636) and Chung Hien Thong (106212681) · 2026"
-- "Data: BITRE (2023) hospitalised injury, 2011–2021; ABS (2026) population, June 2021. Sources and limits: About the data." (link to `about.html`)
+- `<footer class="wrap">`: "BITRE road injury data · 2011–2021 · Team MienTayDuo: Tran Quang Huy and Chung Hien Thong" on the left, "Methods and sources →" (link to `about.html`) on the right.
 
 #### 3.0.3 Breadcrumb and story pager (Huy, task 1.5)
 Pages in the story order (big picture, the four stories, what can be done) carry two empty hooks that `js/site-components.js` fills: `<div class="breadcrumb" data-breadcrumb></div>` as the first child of `main`, and `<div class="story-pager" data-pager></div>` as the last. Breadcrumb e.g. "Part A · Longer stays"; pager "← Previous story · Story 2 of 4 · Next story →". Details are Huy's (task 1.5); a page without the script still reads correctly, because the hooks are empty.
@@ -120,41 +119,39 @@ One site-wide setting: the reader's age group. It only **marks** a group in the 
 - A11Y: Home announces each change through an `aria-live="polite"` status ("Your age group is 65–74 yrs. Charts will mark it. Story 1 · Older pedestrians is about your group."). The suggested story is Story 1 for 40 and over and Story 4 for under 40 (`STORY_FOR_AGE`, the same rule as chart B, §4.B).
 
 ### 3.1 Home (`index.html`)
-- Hero: eyebrow "Pedestrian road injuries in Australia, 2011–2021"; `h1` "The hidden hospital burden of pedestrian injuries"; big number `{beds_per_day}` (orange, very large) with the label "hospital beds filled by injured pedestrians on an average day in 2021"; lead "Pedestrians are only a small share of the people admitted to hospital after road crashes. But they stay much longer than most, and that is easy to miss if we only count cases."; call to action "Start with the big picture →" (`big-picture.html`).
-- `h2` "2021 in three numbers": three KPI cards: `{ped_adm_share_2021}` "of road-injury admissions were pedestrians" (blue number); `{ped_bed_share_2021}` "of road-injury bed days were pedestrians'" (orange number); `{ped_bdpc_2021} vs {all_bdpc_2021}` "days per case, pedestrians vs all road injuries".
-- Story map, `h2` "Where do the {beds_per_day} beds come from?": the formula card "Bed days = number of cases × days per case", then "Two things make the burden large: each stay is long, and there are many cases. Each story explains one of them." Then two columns (one below 768 px):
-  - Part A, orange band "Part A · Why do stays last so long?": story cards 1 and 2.
-  - Part B, blue band "Part B · Why are there so many cases?": story cards 3 and 4.
-  - The part bands are `h3`. Each story card: kicker ("Story 1"), title as an `h4` containing the link to the page (the whole card is clickable through the link), and one teaser line with one number:
+Components as in §5; every number comes from a `data-stat` span.
+- Opening: eyebrow "Pedestrian road injuries in Australia, 2011–2021"; `h1` "The hidden hospital burden of pedestrian injuries"; lead "Pedestrians are only a small share of the people admitted to hospital after road crashes. But they stay much longer than most, and that is easy to miss if we only count cases."
+- `.hero-evidence`: metric card "HOSPITAL BEDS FILLED BY INJURED PEDESTRIANS" `{beds_per_day}` "on an average day in 2021"; question card "Why do so few cases fill so many beds?" / "The big picture shows the gap; the four stories explain it." Then the call to action "Start with the big picture →".
+- `h2` "2021 in three numbers": three metric cards: ADMISSIONS `{ped_adm_share_2021}` "of road-injury admissions were pedestrians"; BED DAYS `{ped_bed_share_2021}` "of road-injury bed days were pedestrians'"; DAYS PER CASE `{ped_bdpc_2021}` "for pedestrians, against {all_bdpc_2021} for all road injuries".
+- Age picker panel (§3.0.4), between the key figures and the story map, so the reader picks a group before choosing a story: `h2` "Find your age group", "Choose your age group and the charts will mark it as you read.", the select, "Clear" and the live status (reading box).
+- Story map panel: `h2` "Where do the {beds_per_day} beds come from?"; "Bed days = number of cases × days per case. Two things make the burden large: each stay is long, and there are many cases. Each story explains one of them." Then `h2` "Part A · Why do stays last so long?" with story cards 1 and 2, and `h2` "Part B · Why are there so many cases?" with cards 3 and 4. Each card: "STORY n", the title as a link (the whole card is clickable), one teaser line with one number:
     1. Older pedestrians carry the heaviest burden — "People aged 75 and over: {bd_rate_ratio_75} times the all-ages bed-day rate."
     2. The heavier the vehicle, the longer the stay — "Hit by a truck or bus: {bdpc_truck} days in hospital per admission."
     3. Pedestrian admissions rise every winter — "Winter: {winter_up} more pedestrian admissions than an average season."
     4. For young children, one road injury in six happens on foot — "Children aged 0–7: {share_0_7} of their road-injury admissions were pedestrians."
-- Age picker (§3.0.4), between the key figures and the story map, so the reader picks a group before choosing a story; `h2` "Find your age group": "Choose your age group and the charts will mark it as you read." Select, "Clear" button and the live status.
 
 ### 3.2 The big picture (`big-picture.html`)
-- `h1`: "The big picture"
-- Text: "In 2021, pedestrians were {ped_adm_share_2021} of road-injury admissions but {ped_bed_share_2021} of the days those patients spent in hospital. A pedestrian stayed {ped_bdpc_2021} days on average, against {all_bdpc_2021} days for all road injuries. The gap is not new: in every year from 2011 to 2021, the pedestrian share of bed days was {gap_min} to {gap_max} times their share of admissions."
-- Age status line (§3.0.4).
-- **Chart A** (§4.A, title `h2`) with its checkbox, legend buttons and year scrubbing.
-- Note under chart A: "Dashed grey lines mark changes in how cases or bed days were counted; hover or focus a line to read about it."
-- Section `h2` "Who makes the cases, and who fills the beds?": "Young people make most of the cases, while older people fill most of the beds. People under 40 were {under40_case_share} of pedestrian admissions in 2021 but only {under40_bed_share} of the bed days. People aged 65 and over were {over65_case_share} of admissions and {over65_bed_share} of bed days."
-- **Chart B** (§4.B, title `h3`). Note under it: "Select an age group to open its story: 40 and over, Story 1 (older pedestrians); under 40, Story 4 (children and young people). On a touch screen, tap twice."
-- Formula card as the hand-off to the stories: "Bed days = number of cases × days per case", with "A · Longer stays →" (`story-older.html`, orange outline) and "B · More cases →" (`story-winter.html`, blue outline).
+- Opening: eyebrow "Overview / 2011–2021"; `h1` "The big picture"; lead "In 2021, pedestrians were {ped_adm_share_2021} of road-injury admissions but {ped_bed_share_2021} of the days those patients spent in hospital."; age status line (§3.0.4).
+- `.hero-evidence`: metric card "DAYS IN HOSPITAL PER PEDESTRIAN ADMISSION, 2021" `{ped_bdpc_2021}` "/ {all_bdpc_2021} for all road injuries"; question card "Is the gap new, or was it there every year?" / "Move along the chart below to read each year from 2011 to 2021."
+- **Chart A** panel (§4.A, title `h2`): the legend buttons as the panel-head toggle, the checkbox, legend row, reading box "In every year from 2011 to 2021, the pedestrian share of bed days was {gap_min} to {gap_max} times their share of admissions.", caption "Move the pointer over the chart, or focus it and use the arrow keys, to read each year. The dashed grey lines mark changes in how cases or bed days were counted; hover or focus one to read about it."
+- **Chart B** panel (§4.B, title `h2`): reading box "People under 40 were {under40_case_share} of pedestrian admissions in 2021 but only {under40_bed_share} of the bed days. People aged 65 and over were {over65_case_share} of admissions and {over65_bed_share} of bed days."; caption "Select an age group to open its story: 40 and over, Story 1 (older pedestrians); under 40, Story 4 (children and young people). On a touch screen, tap twice."
+- Insight aside as the hand-off to the stories: `h2` "Bed days = number of cases × days per case", "Each part of the story takes one side of this sum: Part A · Longer stays (`story-older.html`) and Part B · More cases (`story-winter.html`)."
 
 ### 3.3 Story 1 — Older people (`story-older.html`)
-Kicker "Part A · Story 1 · Older people". Age status line under the text. Layout: text column and chart column (§5).
+Eyebrow "Part A / Story 1". One column, as every story page (§5).
 - `h1`: "Older pedestrians carry the heaviest burden"
-- Text: "Counts alone would hide this, because age groups differ in size. Per 100,000 people, those aged 75 and over had the most pedestrian bed days in 2021: {bd_rate_75} against {bd_rate_all} for all ages, {bd_rate_ratio_75} times as many. Each of their admissions lasted {bdpc_75} days. Within every adult age group, pedestrians also stayed 1.7 to 2.7 times longer than car drivers of the same age, so this is not only an age effect."
-- **Chart C** with its measure toggle and sort toggle (§4.C, title `h2`).
-- What can be done (`aside`, `h2` "What can be done"): "Give slower walkers time to cross. Older adults walk about 0.77 m per second on average, well below the 1.2 m per second that most crossings assume (Western et al., 2025). Longer crossing times, pedestrian detection at signals, and awareness messages aimed at drivers and older people all target this group."
+- Lead: "Counts alone would hide this, because age groups differ in size. Per 100,000 people, those aged 75 and over had the most pedestrian bed days in 2021, and each of their admissions lasted {bdpc_75} days. Within every adult age group, pedestrians also stayed 1.7 to 2.7 times longer than car drivers of the same age, so this is not only an age effect." Age status line.
+- `.hero-evidence`: metric "BED DAYS PER 100,000 PEOPLE, AGED 75+" `{bd_rate_75}` "/ {bd_rate_all} for all ages", figure `{bd_rate_ratio_75}×`; question "Do older people also have more admissions?" / "Switch the chart below to admissions to check."
+- **Chart C** panel with its measure toggle (panel head) and order toggle (§4.C, title `h2`). Reading box (updated on every change): "Aged 75+: {rate} {unit}, {ratio} times the all-ages rate of {all}." plus "Your age group ({group}): {rate}." when one is set. Caption: "Rates divide each age group's pedestrian bed days or admissions by its June 2021 population, so large and small age groups can be compared. They do not adjust for time spent walking."
+- Insight aside, `h2` "What can be done": "Give slower walkers time to cross. Older adults walk about 0.77 m per second on average, well below the 1.2 m per second that most crossings assume (Western et al., 2025). Longer crossing times, pedestrian detection at signals, and awareness messages aimed at drivers and older people all target this group."
 
 ### 3.4 Story 2 — Heavier vehicles (`story-vehicles.html`)
-Kicker "Part A · Story 2 · Heavier vehicles". Age status line under the text.
+Eyebrow "Part A / Story 2". One column.
 - `h1`: "The heavier the vehicle, the longer the stay"
-- Text: "Between 2016 and 2021, a pedestrian hit by a car, ute or van stayed {bdpc_car} days per admission. One hit by a truck or bus stayed {bdpc_truck} days, and one hit by a train {bdpc_train}. Trucks and buses caused only {truck_case_share} of pedestrian admissions but {truck_bed_share} of their bed days. Choose an age group: the pattern holds in each one."
-- **Chart D** with its age select and measure toggle (§4.D, title `h2`).
-- What can be done (`aside`, `h2`): "Reduce crash energy. For trucks on city streets, that means blind-spot systems, side underrun protection and automatic emergency braking, which Australia's Safer Freight Vehicles package encourages (DITRDCA, 2023). For cars, which cause {car_case_share} of cases, it means lower speeds where people walk: the risk of death rises steeply with impact speed (Hussain et al., 2019)."
+- Lead: "Between 2016 and 2021, a pedestrian hit by a car, ute or van stayed {bdpc_car} days per admission. One hit by a train stayed {bdpc_train}. Choose an age group in the chart: the pattern holds in each one." Age status line.
+- `.hero-evidence`: metric "DAYS PER ADMISSION, HIT BY A TRUCK OR BUS" `{bdpc_truck}` "/ {bdpc_car} for a car, ute or van", figure `{truck_car_ratio}×`; question "Do trucks and buses cause many of the cases?" / "Switch the chart below to "Share of cases vs bed days" to check."
+- **Chart D** panel with its measure toggle (panel head) and age select (§4.D, title `h2`). Reading box: days view "{age}: a pedestrian hit by a truck or bus stayed {d} days per admission, {r} times as long as one hit by a car, ute or van ({c})."; share view "{age}: trucks and buses caused {truck_case_share} of pedestrian admissions but {truck_bed_share} of their bed days."
+- Insight aside, `h2` "What can be done": "Reduce crash energy. For trucks on city streets, that means blind-spot systems, side underrun protection and automatic emergency braking, which Australia's Safer Freight Vehicles package encourages (DITRDCA, 2023). For cars, which cause {car_case_share} of cases, it means lower speeds where people walk: the risk of death rises steeply with impact speed (Hussain et al., 2019)."
 
 ### 3.5 Story 3 — Winter (`story-winter.html`, Huy)
 Kicker "Part B · Story 3 · Winter".
@@ -193,7 +190,7 @@ Kicker "Part B · Story 4 · Children and young people". Age status line under t
 ## 4. Charts
 
 ### 4.0 Rules for every chart
-- Each chart lives in a `<figure>` with: a title (a finding, not a label; `h2` when the figure sits directly under the page's `h1`, `h3` inside a section that has its own `h2`, see §3), a subtitle `<p class="chart-subtitle">` (measure · group · years), the control row (if any) above the plot, an HTML legend row (`.legend`, reference-line key on the right), a reading box `<p class="chart-reading">` that states what the chart shows in its current state (`aria-live="polite"` when a control changes it), the plot container `<div class="chart" id="chart-x">`, captions (`.chart-captions`), `<details class="data-table"><summary>Show data table</summary>…</details>` built from the same data, and `.data-links` to the CSV files. The figure is a white panel (`.chart-figure`); when it has one main toggle, the title and the toggle share a `.panel-head` row.
+- Each chart lives in a panel `<section class="panel">` with, in this order: `.panel-head` (the title `h2`, a finding not a label, and the main toggle as `.controls` buttons), `<p class="chart-period">` (measure · group · years), further `.controls` rows (if any), the legend row `.chart-context` (swatches; the reference-line key on the right as `.reference`), the reading box `<p class="annotation">` that states what the chart shows in its current state (`aria-live="polite"` when a control changes it), the plot container `<div class="chart" id="chart-x">`, `<p class="chart-caption">`, `<details><summary>Show data table</summary>…</details>` built from the same data, and `<p class="data-links">` to the CSV files. These are the components of Huy's prototype (§5). Text drawn inside the SVG uses `.chart-annotation`, never `.annotation`.
 - SVG: `role="group"` (not `role="img"`, which would hide the focusable marks inside it from screen readers), `aria-labelledby` pointing to a `<title>` and `aria-describedby` to a `<desc>` inside the SVG; the `<desc>` states the main finding in one sentence.
 - **Width:** charts are drawn at the container's real width (no fixed `viewBox` scaling), so text never shrinks below 12 px. Redraw on window resize (debounced 200 ms) without animation. Height: fixed per chart, with a smaller value below 768 px.
 - **Scales:** every bar starts at zero; the line chart's y-axis starts at zero. No dual axes. Gridlines light (`--grid`), axis text `--ink-2`, 12 px minimum.
@@ -269,27 +266,25 @@ Kicker "Part B · Story 4 · Children and young people". Age status line under t
 
 ---
 
-## 5. Visual design tokens (`css/base.css` `:root`)
+## 5. Visual design (`css/base.css`)
 
-The site follows one shared design system (from Huy's page prototype, adopted for every page in v2.1): cool grey
-page, white panels, a blue accent, dark pressed buttons.
+v2.1: the site has **one design system**, the team's shared stylesheet from Huy's page prototype. `css/base.css` part 1 is that stylesheet, unchanged; part 2 adds only what the prototype has no style for (the Part A / Part B story lists, the age picker's status line, the Home call to action, three numbers and story map, chart A's checkbox, legend swatches for bed days). Change part 1 only together with Huy, so every page stays the same.
 
 ```
---surface: #f6f8fa;   --card: #ffffff;       --wash: #edf3f8;
---ink: #172532;       --ink-2: #526171;
---grid: #e6ebef;      --border: #d4dce3;     --control-border: #748391;
---blue: #2167ab;      --orange: #b65737;     --grey: #6e797d;
---focus: #7040aa;     --radius: 12px;
-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif
+--surface: #ffffff;    --background: #f6f8fa;  --wash: #edf3f8;
+--ink: #172532;        --muted: #526171;       --line: #d4dce3;
+--accent: #2167ab;     --orange: #b65737;      --grey: #6e797d;
+--focus: #7040aa;      --radius: 12px;
+font: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif
 ```
-- Body 16 px / 1.55. `h1` `clamp(2.6rem, 5vw, 4.75rem)`, weight 730, tight tracking (−0.048em), max 19 characters wide; `h2` 1.2rem; chart text 12–13 px.
-- Page opening, every page: eyebrow (`.eyebrow`, blue uppercase 0.72rem, e.g. "Part A / Story 1"), `h1`, lead (`.lead`, 1.16rem, `--ink-2`, max 68ch), then `.hero-evidence`: a metric card (`.metric`, big number with a 4 px coloured left edge: orange for bed days, blue for admissions) next to a question card (`.question-card`, "The question" + a question the chart below answers).
-- Story pages, one column: opening → chart panel (`.chart-figure`) → `aside.insight` ("What can be done" or "What the data can say", `--wash` background).
-- Controls: buttons and selects 44 px high, 1 px `--control-border`, radius 0.5rem; pressed buttons (`aria-pressed="true"`) are `--ink` with white text.
-- Header: white, brand "MienTayDuo · Few cases, long stays"; current nav item `--wash` background with a 2 px blue underline. Footer: credits left, "Methods and sources →" right.
-- Content width max 1120 px, side padding 24 px (14 px below 768 px, 10 px below 420 px).
+- Page frame: `<main class="wrap">` (max 1120 px, 64 px top padding), `<div class="intro">` (or `<article class="intro">` on story pages) holding the content.
+- Page opening: `.eyebrow` (blue uppercase, e.g. "Part A / Story 1"), `h1` (`clamp(2.6rem, 5vw, 4.75rem)`), `.lead`, then `.hero-evidence`: a `.metric` card (`<small>LABEL</small><p><strong>number</strong> <span>unit</span></p>`, optional blue `<b>` figure) next to a `.question-card` (`<small>THE QUESTION</small><h2>…</h2><p>…</p>`).
+- Story pages: opening → chart `.panel` (§4.0) → `aside.insight` ("What can be done" or "What the data can say").
+- Controls: `.controls` buttons and selects 44 px high; pressed buttons (`aria-pressed="true"`) are `--ink` with white text.
+- Home: `.cta` (dark button link), the three numbers as `.hero-evidence.kpi-row` metric cards, the age picker in a `.panel`, the story map as `.panel.reading` with `.method-grid.story-grid` cards.
+- Chart colours (`COLORS` in shared-constants.js, the same values): blue `#2167ab` = admissions, orange `#b65737` = bed days, grey `#6e797d` = comparison. Chart text 12–13 px; bar values bold 13 px; reference lines dashed `#52616a`.
 - Reader's age-group band in charts (v2.0): `#e3edf6` (`COLORS.highlight`) behind the marks, plus a bold axis label, so the marking never depends on the band's colour alone.
-- Contrast (checked against white): `--ink` 15.6:1; `--ink-2` 6.4:1; blue 5.8:1, orange 4.8:1, grey 4.5:1 (graphical objects ≥ 3:1, WCAG 2.1 SC 1.4.11); control borders 3.9:1.
+- Contrast (checked against white): `--ink` 15.6:1; `--muted` 6.4:1; blue 5.8:1, orange 4.8:1, grey 4.5:1 (graphical objects ≥ 3:1, WCAG 2.1 SC 1.4.11).
 
 ---
 
@@ -321,7 +316,7 @@ js/chart-c-age-rates.js        drawChartC() / updateChartC()
 js/chart-d-vehicle.js          drawChartD() / updateChartD()
 js/chart-e-season.js           drawChartE() / updateChartE()
 js/chart-f-young.js            drawChartF()
-js/interactions.js             initInteractions(): chart controls, nav menu and part lists, age picker and age status,
+js/interactions.js             initInteractions(): chart controls, nav part lists, reading settings, age picker and status,
                                Escape, resize handler (redraws the charts on this page). Huy adds the chart E/F and
                                calculator controls in a separate block commented "Huy".
 js/load-data.js                loads and validates only the CSVs this page needs, computes §2.2 values, fills
@@ -375,14 +370,14 @@ Every item applies to **all eight pages at 375, 768 and 1280 px**. `tests/check-
 
 Navigation (v2.0)
 - [ ] Every nav link opens its page; that page's link has `aria-current="page"`, and on story pages the part button is marked as well.
-- [ ] Part lists open and close with mouse and keyboard (Enter/Space on the button, Escape closes and returns focus); the menu button works the same way below 1024 px.
+- [ ] Part lists open and close with mouse and keyboard (Enter/Space on the button, Escape closes and returns focus); the nav row wraps on phones and every entry stays reachable.
 - [ ] Each page loads only the CSVs in the §6 table (check the browser's Network tab) and only its own chart files.
 - [ ] The age group chosen on Home is marked on big-picture (chart B), story-older (chart C), story-vehicles (chart D's select) and story-young (chart F); it survives a reload and page changes, also with storage blocked (`?age=`); "Clear" removes it everywhere.
 
 Functional
 - [ ] Every page loads from a local server (`python -m http.server`) and from Mercury with no console errors.
 - [ ] All six charts render with the values in §2.2 and §4. Spot-check, on the page that holds each number: 62 beds (Home, big picture), 5.9% and 11.4% (Home, big picture), 235.6 (story-older, chart C tooltip and table), 22.0 (story-vehicles), +12% (story-winter), 17.4% (story-young).
-- [ ] Every control works with mouse and keyboard: chart A checkbox, legend buttons and year slider (←/→, Home/End); chart B click/Enter opens the right story; chart C measure and sort toggles; chart D select and measure toggle; chart E and F controls; the age picker; nav links, part buttons, menu button, formula-card links.
+- [ ] Every control works with mouse and keyboard: chart A checkbox, legend buttons and year slider (←/→, Home/End); chart B click/Enter opens the right story; chart C measure and sort toggles; chart D select and measure toggle; chart E and F controls; the age picker; nav links, part buttons, the reading-settings panel, formula-card links.
 - [ ] Chart A never draws a 2021 point for the "without deaths" line.
 - [ ] Chart D shows "Fewer than 20 cases" for every vehicle–age cell below 20 (e.g. Train for every single age group).
 - [ ] Tooltips appear on hover and on keyboard focus, disappear on mouse leave, blur and Escape, and stay inside the viewport.

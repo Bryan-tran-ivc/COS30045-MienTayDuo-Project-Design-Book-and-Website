@@ -6,9 +6,11 @@
  */
 
 // ---------- Motion ----------
-// A11Y: honour the operating-system "reduce motion" setting for every D3 transition
+// A11Y: honour the operating-system "reduce motion" setting, and the site's own "Reduce motion" reading setting
+// (body.reduce-motion, set from the accessibility panel in the header), for every D3 transition
 const prefersReducedMotion = () =>
-  window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.body.classList.contains("reduce-motion") ||
+  (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
 const duration = (ms = TRANSITION_MS) => (prefersReducedMotion() ? 0 : ms);
 

@@ -73,7 +73,7 @@ const drawChartF = () => {
   const youngest = rows.find((d) => d["Age group"] === "0-7");
   const note = inner
     .append("text")
-    .attr("class", "annotation")
+    .attr("class", "chart-annotation")
     .attr("x", x("0-7") + x.bandwidth() + 6)
     .attr("y", youngest ? y(youngest.ped_share_of_age_pct) + 14 : 0)
     .text(youngest ? `${formatters.dec0(youngest.ped_share_of_age_pct / allAges)}× the all-ages share` : "");

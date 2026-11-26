@@ -121,7 +121,7 @@ const drawChartB = () => {
       g.append("path").attr("class", "bracket").attr("d", `M${left},${bracketY + 5}V${bracketY}H${right}V${bracketY + 5}`);
       const text = g
         .append("text")
-        .attr("class", "annotation")
+        .attr("class", "chart-annotation")
         .attr("y", bracketY - 22)
         .attr("text-anchor", "middle");
       text

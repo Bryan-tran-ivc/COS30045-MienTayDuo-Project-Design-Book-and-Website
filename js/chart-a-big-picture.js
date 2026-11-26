@@ -322,7 +322,7 @@ const highlightSeriesA = (instant = false) => {
       .ease(d3.easeCubicInOut)
       .attr("opacity", chosen && chosen !== key ? DIMMED_OPACITY : 1);
   });
-  d3.selectAll("#legend-a .legend-button").attr("aria-pressed", function () {
+  d3.selectAll("#legend-a button").attr("aria-pressed", function () {
     return String(this.dataset.series === chosen);
   });
 };
